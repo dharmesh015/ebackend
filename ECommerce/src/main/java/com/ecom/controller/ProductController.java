@@ -58,4 +58,10 @@ public class ProductController {
     	System.out.println("controller");
 		return productService.getAllProducts();
 	}
+
+	@DeleteMapping("/deleteProduct/{productId}")
+    public void deleteProduct(@PathVariable Long productId) {
+    	System.err.println("delete conroller");
+        productService.deleteProductById(productId);
+    }
 }
