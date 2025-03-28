@@ -33,4 +33,9 @@ public class ProductService {
        
     }
 
+	@Transactional
+    public void deleteProductById(Long productId) {
+        productDao.deleteById(productId);
+    }
+
 }
