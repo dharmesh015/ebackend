@@ -19,6 +19,7 @@ import com.ecom.entity.JwtResponse;
 import com.ecom.entity.User;
 import com.ecom.util.JwtUtil;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,8 @@ public class JwtService implements UserDetailsService {
 
     @Autowired
     private UserDao userDao;
+    
+  
 
     @Autowired
     @Lazy
@@ -80,5 +83,14 @@ public class JwtService implements UserDetailsService {
     	   throw new Exception("USER_DISABLED");
        }
         
+       
+       
+    }
+    
+    public User getdata(String token) {
+    	String usrname= jwtUtil.getUsernameFromToken(token);
+    	Optional<User> byUserName = userDao.findByUserName(usrname);
+    	
+    	return byUserName.get();
     }
 }

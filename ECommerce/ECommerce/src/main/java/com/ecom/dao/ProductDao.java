@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ecom.entity.Product;
 
 @Repository
-public interface ProductDao extends CrudRepository<Product, Long>{
+public interface ProductDao extends JpaRepository<Product, Long>{
 //
 	public Page findAll(Pageable pageable);
 	

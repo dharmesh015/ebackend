@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ecom.dao.OrderDetailDao;
 import com.ecom.dao.ProductDao;
 import com.ecom.entity.Product;
 
@@ -19,6 +20,10 @@ public class ProductService {
     
     @Autowired
     private ProductDao productDao;
+    
+    
+    @Autowired
+    private OrderDetailDao orderdetaildao;
 
     @Transactional
     public Product addNewProduct(Product product) {
@@ -37,6 +42,8 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(Long productId) {
+    	
+    	orderdetaildao.deleteById(productId);
         productDao.deleteById(productId);
     }
     

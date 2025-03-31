@@ -7,11 +7,13 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.ecom.entity.OrderDetail;
+import com.ecom.entity.Product;
 import com.ecom.entity.User;
 
 @Repository
-public interface OrderDetailDao extends CrudRepository<OrderDetail, Integer>{
+public interface OrderDetailDao extends JpaRepository<OrderDetail, Long>{
 	
 	public List<OrderDetail> findByUser(User user);
+	
 
 }
