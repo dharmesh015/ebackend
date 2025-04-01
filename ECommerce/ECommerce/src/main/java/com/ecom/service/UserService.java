@@ -59,6 +59,7 @@ public class UserService {
     }
 
     public User registerNewUser(User user) {
+    	System.err.println(user.getMobileNumber());
         Role role = roleDao.findById("User").get();
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(role);

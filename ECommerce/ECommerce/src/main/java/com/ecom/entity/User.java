@@ -93,6 +93,7 @@ public class User {
     private String email;
     private String mobileNumber;
     private String userPassword;
+    private String address;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE",
@@ -162,5 +163,13 @@ public class User {
     public void setRole(Set<Role> role) {
         this.role = role;
     }
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
 

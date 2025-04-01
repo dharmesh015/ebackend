@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.ecom.entity.ImageModel;
 import com.ecom.entity.Product;
@@ -115,4 +120,17 @@ public class ProductController {
 			
 			
 		}
+		
+		
+		@GetMapping("/getAllProductsPageWise")
+	    public Page<Product> getAllProducts(
+	            @RequestParam(defaultValue = "0") int page,
+	            @RequestParam(defaultValue = "10") int size,
+	            @RequestParam(defaultValue = "id") String sortBy,
+	            @RequestParam(defaultValue = "asc") String sortDir) {
+	        System.err.println("pagewise controller");
+	        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+	        PageRequest pageable = PageRequest.of(page, size, sort);
+	        return productService.getAllProductsPageWise(pageable);
+	    }
 }

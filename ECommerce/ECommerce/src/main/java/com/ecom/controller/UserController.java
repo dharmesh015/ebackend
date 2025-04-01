@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping({"/registerNewUser"})
     public User registerNewUser(@RequestBody User user) {
     	System.out.println("controller of registration");
-    	System.err.println(user.getUserPassword());
+    	System.err.println(user.getAddress());
         return userService.registerNewUser(user);
     }
 

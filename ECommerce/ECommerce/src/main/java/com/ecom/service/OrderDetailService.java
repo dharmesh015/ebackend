@@ -2,8 +2,12 @@ package com.ecom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ecom.configuration.JwtRequestFilter;
@@ -79,5 +83,21 @@ public class OrderDetailService {
 	}
 	
 	}
+	
+	 public Page<OrderDetail> getAllProductsPageWise(String username,Pageable pageable) {
+		 System.err.println("Fetching products for user name: " + username);
+		     User user = userDao.findByUserName(username).get();
+	        Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
+//	        System.err.println("Products found: " + products.getContent());
+	        List<OrderDetail> updatedOrderDetails = products.stream()
+	                .map(orderDetail -> {
+	                    orderDetail.getProduct().setProductImages(null);// Set user to null
+	                    return orderDetail; // Return the modified order detail
+	                })
+	                .collect(Collectors.toList());
+
+	            // Return a new Page with the updated order details
+	            return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
+	        }
 
 }
