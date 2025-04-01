@@ -84,20 +84,22 @@ public class OrderDetailService {
 	
 	}
 	
-	 public Page<OrderDetail> getAllProductsPageWise(String username,Pageable pageable) {
-		 System.err.println("Fetching products for user name: " + username);
-		     User user = userDao.findByUserName(username).get();
-	        Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
-//	        System.err.println("Products found: " + products.getContent());
-	        List<OrderDetail> updatedOrderDetails = products.stream()
-	                .map(orderDetail -> {
-	                    orderDetail.getProduct().setProductImages(null);// Set user to null
-	                    return orderDetail; // Return the modified order detail
-	                })
-	                .collect(Collectors.toList());
+	public Page<OrderDetail> getAllorderPageWise(String username, Pageable pageable) {
+	    User user = userDao.findByUserName(username).get();
+	    Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
+	    System.err.println("Fetching products for user name: " + username);
 
-	            // Return a new Page with the updated order details
-	            return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
-	        }
+	    List<OrderDetail> updatedOrderDetails = products.stream()
+	            .map(orderDetail -> {
+	                if (orderDetail.getProduct() != null) {
+	                    orderDetail.getProduct().setProductImages(null); // Set product images to null
+	                }
+	                return orderDetail; // Return the modified order detail
+	            })
+	            .collect(Collectors.toList());
+	    System.out.print( updatedOrderDetails.getFirst().getOrderDate());
+	    // Return a new Page with the updated order details
+	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
+	}
 
 }

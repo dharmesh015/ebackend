@@ -52,16 +52,17 @@ public class OrderDetailController {
 	
 //	@PreAuthorize("hasRole('User')")
 	@GetMapping({"/getorderdetails/{username}"})
-    public Page<OrderDetail> getAllProducts(
+    public Page<OrderDetail> getProducts(
+    		@PathVariable("username") String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "orderId") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir,
-            @PathVariable("username") String username) {
-        System.err.println("orderdetails controller");
-        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+            @RequestParam(defaultValue = "asc") String sortDir)
+	{
+        System.err.println("orderdetails controller"+username);
+        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, "orderDate");
         PageRequest pageable = PageRequest.of(page, size, sort);
-        return orderDetailService.getAllProductsPageWise(username,pageable);
+        return orderDetailService.getAllorderPageWise(username,pageable);
     }
 
 }

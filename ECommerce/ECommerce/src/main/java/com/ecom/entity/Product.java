@@ -31,7 +31,7 @@ public class Product {
 	private Double productDiscountedPrice;
 	private Double productActualPrice;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade =CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL)
 	@JoinTable(name = "product_images",
 	joinColumns = {
 			@JoinColumn(name = "product_id")

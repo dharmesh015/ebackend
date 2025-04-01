@@ -140,7 +140,7 @@ import java.time.LocalDate;
 
 @Entity
 public class OrderDetail {
-    
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
