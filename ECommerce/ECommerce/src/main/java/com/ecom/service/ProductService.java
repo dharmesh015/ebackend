@@ -2,9 +2,11 @@ package com.ecom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.dao.OrderDetailDao;
 import com.ecom.dao.ProductDao;
+import com.ecom.dao.UserDao;
+import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
+import com.ecom.entity.User;
 
 
 
@@ -21,6 +26,9 @@ public class ProductService {
     
     @Autowired
     private ProductDao productDao;
+    
+    @Autowired
+    private UserDao userdao;
     
     
     @Autowired
@@ -92,5 +100,19 @@ public class ProductService {
     	 return productDao.findAll(pageable); 
      
     }
+
+
+	
+	public Page<Product> getproductbyusername(String username, Pageable pageable) {
+	    User user = userdao.findByUserName(username).get();
+	    Page<Product> products = productDao.findBySellername(username, pageable);
+	    System.err.println("Fetching products for user name: " + username);
+
+	   return products;
+//	    System.out.print( updatedOrderDetails.getFirst().getOrderDate());
+  // Return a new Page with the updated order details	 
+//	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
+}
+	
 
 }

@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
+import com.ecom.entity.User;
 
 @Repository
-public interface ProductDao extends JpaRepository<Product, Long>{
+public interface ProductDao extends CrudRepository<Product, Long>{
 //
 	public Page findAll(Pageable pageable);
 	
@@ -19,4 +21,7 @@ public interface ProductDao extends JpaRepository<Product, Long>{
 		String key1, String key2, Pageable pageable);
 //	
 
+//	public  Page<Product> findByUser(User user, Pageable pageable) ;
+
+	public  Page<Product> findBySellername(String username, Pageable pageable) ;
 }

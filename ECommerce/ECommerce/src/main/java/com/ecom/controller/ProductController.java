@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import com.ecom.entity.ImageModel;
+import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
 import com.ecom.service.ProductService;
 
@@ -132,5 +133,19 @@ public class ProductController {
 	        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
 	        PageRequest pageable = PageRequest.of(page, size, sort);
 	        return productService.getAllProductsPageWise(pageable);
+	    }
+		
+		@GetMapping({"/getallproduct/{username}"})
+	    public Page<Product> getProducts(
+	    		@PathVariable("username") String username,
+	            @RequestParam(defaultValue = "0") int page,
+	            @RequestParam(defaultValue = "10") int size,
+	            @RequestParam(defaultValue = "orderId") String sortBy,
+	            @RequestParam(defaultValue = "asc") String sortDir)
+		{
+	        System.err.println("orderdetails controller"+username);
+	        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, "orderDate");
+	        PageRequest pageable = PageRequest.of(page, size, sort);
+	        return productService.getproductbyusername(username,pageable);
 	    }
 }

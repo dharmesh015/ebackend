@@ -13,7 +13,7 @@ import com.ecom.entity.Product;
 import com.ecom.entity.User;
 
 @Repository
-public interface OrderDetailDao extends JpaRepository<OrderDetail, Long>{
+public interface OrderDetailDao extends CrudRepository<OrderDetail, Long>{
 	
 	public List<OrderDetail> findByUser(User user);
 	

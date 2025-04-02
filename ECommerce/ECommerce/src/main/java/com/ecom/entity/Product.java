@@ -21,6 +21,14 @@ import jakarta.persistence.JoinColumn;
 @Entity
 public class Product {
 	
+	public String getSellername() {
+		return sellername;
+	}
+
+	public void setSellername(String sellername) {
+		this.sellername = sellername;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
@@ -30,7 +38,7 @@ public class Product {
 	private String productDescription;
 	private Double productDiscountedPrice;
 	private Double productActualPrice;
-	
+	private String sellername;
 	@ManyToMany(fetch = FetchType.LAZY, cascade =CascadeType.ALL)
 	@JoinTable(name = "product_images",
 	joinColumns = {

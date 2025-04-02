@@ -38,25 +38,16 @@ public class UserService {
 
         User adminUser = new User();
         adminUser.setUserName("dharmesh@admin");
-        adminUser.setUserPassword(getEncodedPassword("rakesh123"));
+        adminUser.setUserPassword(getEncodedPassword("admin123"));
 //        adminUser.setUserPassword("dharmesh123");
         adminUser.setUserFirstName("admin");
         adminUser.setUserLastName("admin");
         Set<Role> adminRoles = new HashSet<>();
         adminRoles.add(adminRole);
         adminUser.setRole(adminRoles);
-        userDao.save(adminUser);
+        userDao.save(adminUser);}
 
-//        User user = new User();
-//        user.setUserName("raj123");
-//        user.setUserPassword(getEncodedPassword("raj@123"));
-//        user.setUserFirstName("raj");
-//        user.setUserLastName("sharma");
-//        Set<Role> userRoles = new HashSet<>();
-//        userRoles.add(userRole);
-//        user.setRole(userRoles);
-//        userDao.save(user);
-    }
+
 
     public User registerNewUser(User user) {
     	System.err.println(user.getMobileNumber());

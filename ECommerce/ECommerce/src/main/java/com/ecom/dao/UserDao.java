@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.ecom.entity.User;
 
 @Repository
-public interface UserDao extends JpaRepository<User, String> {
+public interface UserDao extends CrudRepository<User, String> {
 
 	Optional<User> findByUserName(String usrname);
 }
