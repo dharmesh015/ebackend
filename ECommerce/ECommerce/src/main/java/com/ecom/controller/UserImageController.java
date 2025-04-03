@@ -19,7 +19,7 @@ public class UserImageController {
     private UserImageService userImageService;
     
     @PostMapping("/upload-image")
-    @PreAuthorize("hasRole('User')")
+//    @PreAuthorize("hasRole('User')")
     public ResponseEntity<String> uploadImage(
             @RequestParam("userName") String userName,
             @RequestParam("imageFile") MultipartFile file) {
