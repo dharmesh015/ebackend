@@ -12,4 +12,8 @@ import com.ecom.entity.User;
 public interface UserDao extends CrudRepository<User, String> {
 
 	Optional<User> findByUserName(String usrname);
+
+//	Optional<User> findByEmail(String toEmail);
+
+	User findByEmail(String toEmail);
 }

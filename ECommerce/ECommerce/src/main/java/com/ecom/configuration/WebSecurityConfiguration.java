@@ -44,7 +44,7 @@ public class WebSecurityConfiguration {
         http.cors();  //  CORS (enable if required)
         http.csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/authenticate","/createNewRole","/HttpMethod.OPTIONS","/deleteProduct/**", "/registerNewUser","/getAllProducts","/getProductById/**","/getProductDetails/**","/getdata/**","/getAllProductsPageWise","/getorderdetails/**","/upload-image","/sendEmail/**")
+                .requestMatchers("/authenticate","/createNewRole","/HttpMethod.OPTIONS","/deleteProduct/**", "/registerNewUser","/getAllProducts","/getProductById/**","/getProductDetails/**","/getdata/**","/getAllProductsPageWise","/getorderdetails/**","/upload-image","/send-email","/reset-password/**","/validate-token/**")
                 .permitAll()
                 .requestMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
