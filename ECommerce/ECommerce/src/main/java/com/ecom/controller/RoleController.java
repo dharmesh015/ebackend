@@ -17,7 +17,7 @@ public class RoleController {
     private RoleService roleService;
     
     @Autowired
-    private UserService rService;
+    private UserService Service;
 
     @PostMapping("/createNewRole")
     public Role createNewRole(@RequestBody Role role) {
@@ -26,8 +26,8 @@ public class RoleController {
     
     @PostMapping("/registerNewUser")
     public User postMethodName(@RequestBody User user) {
-       
-    	return rService.registerNewUser(user);
+       System.out.println("controler");
+    	return Service.registerNewUser(user);
 //        return entity;
     }
     

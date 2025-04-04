@@ -9,6 +9,8 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.Role;
 import com.ecom.entity.User;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,41 +26,61 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void initRoleAndUser() {
+    @PostConstruct
+    public void initRoleAndUser () {
+        try {
+            Role sellerRole = new Role();
+            sellerRole.setRoleName("Seller");
+            sellerRole.setRoleDescription("Seller role");
+            roleDao.save(sellerRole);
 
-        Role adminRole = new Role();
-        adminRole.setRoleName("Admin");
-        adminRole.setRoleDescription("Admin role");
-        roleDao.save(adminRole);
+            Role adminRole = new Role();
+            adminRole.setRoleName("Admin");
+            adminRole.setRoleDescription("Admin role");
+            roleDao.save(adminRole);
 
-        Role userRole = new Role();
-        userRole.setRoleName("User");
-        userRole.setRoleDescription("Default role for newly created record");
-        roleDao.save(userRole);
+            Role userRole = new Role();
+            userRole.setRoleName("User");
+            userRole.setRoleDescription("Default role for newly created record");
+            roleDao.save(userRole);
 
-        User adminUser = new User();
-        adminUser.setUserName("dharmesh@admin");
-        adminUser.setUserPassword(getEncodedPassword("admin123"));
-//        adminUser.setUserPassword("dharmesh123");
-        adminUser.setUserFirstName("admin");
-        adminUser.setUserLastName("admin");
-        Set<Role> adminRoles = new HashSet<>();
-        adminRoles.add(adminRole);
-        adminUser.setRole(adminRoles);
-        userDao.save(adminUser);}
+            User sellerUser = new User();
+            sellerUser.setUserName("dharmesh123");
+            sellerUser.setUserPassword(getEncodedPassword("seller"));
+            sellerUser.setUserFirstName("dharmesh");
+            sellerUser.setUserLastName("gelatar");
+            Set<Role> roles = new HashSet<>();
+            roles.add(sellerRole);
+            sellerUser .setRole(roles);
+            userDao.save(sellerUser );
 
+            User adminUser  = new User();
+            adminUser.setUserName("deep123");
+            adminUser.setUserPassword(getEncodedPassword("admin"));
+            adminUser.setUserFirstName("deep");
+            adminUser.setUserLastName("patel");
+            Set<Role> adminRoles = new HashSet<>();
+            adminRoles.add(adminRole);
+            adminUser .setRole(adminRoles);
+            userDao.save(adminUser );
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error initializing roles and users: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
+    public User registerNewUser (User user) {
+        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
 
-    public User registerNewUser(User user) {
-    	System.err.println(user.getMobileNumber());
-        Role role = roleDao.findById("User").get();
+        User savedUser  = userDao.save(user);
+
+        Role role = roleDao.findById("User").orElseThrow(() -> new RuntimeException("Role not found"));
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(role);
-        user.setRole(userRoles);
-        user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-//        user.setUserPassword(user.getUserPassword());
+        savedUser .setRole(userRoles);
 
-        return userDao.save(user);
+        return userDao.save(savedUser);
     }
 
     public String getEncodedPassword(String password) {

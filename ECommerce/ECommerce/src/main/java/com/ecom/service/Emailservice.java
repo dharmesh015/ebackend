@@ -74,7 +74,7 @@ public class Emailservice {
                 return "User  not found";
             }
             
-            // Generate a unique reset link or token
+           
             String resetToken = tokenService.generatePasswordResetToken(user.getEmail());
             System.err.println("Generated Token: " + resetToken);
             

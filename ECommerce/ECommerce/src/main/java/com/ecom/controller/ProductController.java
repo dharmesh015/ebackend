@@ -43,7 +43,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-	@PreAuthorize("hasRole('Admin')")
+	@PreAuthorize("hasRole('Seller')")
     @PostMapping(value = {"/addNewProduct"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public Product addNewProduct(@RequestPart("product") Product product,
                                  @RequestPart("imageFile") MultipartFile[] file) {        
@@ -84,7 +84,7 @@ public class ProductController {
         productService.deleteProductById(productId);
     }
     
-	@PreAuthorize("hasRole('Admin')")
+	@PreAuthorize("hasRole('Seller')")
     @PostMapping(value = {"/updateProduct"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public Product updateProduct(@RequestPart("product") Product product,
                                  @RequestPart(value = "imageFile", required = false) MultipartFile[] file) {

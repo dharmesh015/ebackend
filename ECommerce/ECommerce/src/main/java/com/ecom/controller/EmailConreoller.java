@@ -23,11 +23,6 @@ public class EmailConreoller {
 	@Autowired
 	public Emailservice emailService;
 	
-//	@PostMapping("/send-email")
-//    public ResponseEntity<String> sendEmail(@RequestBody String email) {
-//        String response = emailService.sendEmail(email);
-//        return ResponseEntity.ok(response);
-//    }
 	@PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
 		System.out.println("send email--"+request.getEmail());
@@ -42,15 +37,5 @@ public class EmailConreoller {
         }
     }
     
-//    @GetMapping("/reset-password/{email}/{newPassword}")
-//    public ResponseEntity<String> resetPassword(@PathVariable ("email") String email,@PathVariable ("newPassword") String newPassword) {
-//    	System.err.println("reset-passwor-"+newPassword);
-//        boolean result = emailService.resetPassword(email,newPassword);
-//        
-//        if (result) {
-//            return ResponseEntity.ok("Password updated successfully");
-//        } else {
-//            return ResponseEntity.badRequest().body("Failed to update password");
-//        }
-//    }
+
 } 

@@ -35,17 +35,7 @@ public class TokenController {
             return ResponseEntity.badRequest().body("Invalid or expired token");
         }
     }
-//    @GetMapping("/reset-password/{token}/{newPassword}")
-//    public ResponseEntity<String> resetPassword(@PathVariable ("token") String token,@PathVariable ("newPassword") String newPassword) {
-//    	System.err.println("reset-passwor-"+newPassword);
-//        boolean result = emailService.resetPassword(email,newPassword);
-//        
-//        if (result) {
-//            return ResponseEntity.ok("Password updated successfully");
-//        } else {
-//            return ResponseEntity.badRequest().body("Failed to update password");
-//        }
-//    }
+   
     @GetMapping("/reset-password/{token}/{newPassword}")
     public ResponseEntity<String> resetPassword(@PathVariable ("token") String token,@PathVariable ("newPassword") String newPassword) {
         // First validate the token
