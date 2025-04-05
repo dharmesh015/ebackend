@@ -14,4 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UserImageDao extends CrudRepository<UserImage, Long> {
     Optional<UserImage> findByUser(User user);
+
+	void deleteByUser(User user);
+    
 }

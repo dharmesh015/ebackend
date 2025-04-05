@@ -1,6 +1,7 @@
 package com.ecom.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.dao.RoleDao;
 import com.ecom.dao.UserDao;
+import com.ecom.dao.UserImageDao;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
 
@@ -24,6 +26,11 @@ public class AdminService {
 	
 	@Autowired
 	private RoleDao roleDao;
+	
+	
+	@Autowired
+	private UserImageDao imageDao;
+	
 	
 	public List<User> getAllUser(){
 		return (List<User>) userDao.findAll();
@@ -41,11 +48,32 @@ public class AdminService {
 	@Transactional
     public void deleteUser (String userName) {
         User user = userDao.findById(userName).orElseThrow(() -> new RuntimeException("User  not found"));
-        
-        // Remove the user from the USER_ROLE table
-        user.getRole().clear(); // This will remove the associations in the USER_ROLE table
-        
-        // Now delete the user
+
+        imageDao.deleteByUser(user);
+        user.getRole().clear();
         userDao.delete(user);
     }
+	
+	
+	public String updateUser(User user) {
+		 User userobj = userDao.findById(user.getUserName()).orElseThrow(() -> new RuntimeException("User  not found"));
+	        
+		 userobj.setUserPassword(userobj.getUserPassword()); 
+		 userobj.setRole(userobj.getRole());
+		 userobj.setEmail(user.getEmail());
+		 userobj.setAddress(user.getAddress());
+		 userobj.setMobileNumber(user.getMobileNumber());
+		 userobj.setUserFirstName(user.getUserFirstName());
+		 userobj.setUserLastName(user.getUserLastName());
+	
+	        
+	       userDao.save(userobj);
+	       return "saved";
+	}
+
+
+	public User getuser(String name) {
+		Optional<User> userdata = userDao.findById(name);
+		return userdata.get();
+	}
 }

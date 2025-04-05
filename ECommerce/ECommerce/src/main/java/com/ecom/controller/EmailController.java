@@ -13,29 +13,53 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.EmailRequest;
 import com.ecom.entity.PasswordResetRequest;
 import com.ecom.service.Emailservice;
+import com.ecom.service.TokenService;
 
 
 @RestController
 @CrossOrigin
-public class EmailConreoller {
+public class EmailController {
 
 	
 	@Autowired
 	public Emailservice emailService;
+	
+	 @Autowired
+	    private TokenService tokenService;
+	    
+	 
 	
 	@PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
 		System.out.println("send email--"+request.getEmail());
         String result = emailService.sendPasswordResetEmail(request.getEmail());
         
-        if (result.equals("User not found")) {
-            return ResponseEntity.ok("User not found");
-        } else if (result.equals("Success")) {
-            return ResponseEntity.ok("Success");
+        if (result.equals("UNF")) {
+            return ResponseEntity.ok("UNF");
+        } else if (result.equals("S")) {
+            return ResponseEntity.ok("S");
         } else {
             return ResponseEntity.badRequest().body(result);
         }
     }
+	
+	@GetMapping("/reset-password/{token}/{newPassword}")
+    public ResponseEntity<String> resetPassword(@PathVariable ("token") String token,@PathVariable ("newPassword") String newPassword) {
+        // First validate the token
+        String email = tokenService.validateToken(token);
+        
+        if (email == null) {
+            return ResponseEntity.badRequest().body("Invalid or expired token");
+        }
+        
+        // If token is valid, reset the password
+        boolean result = emailService.resetPassword(email, newPassword);
+        
+        if (result) {
+            return ResponseEntity.ok("Password updated successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to update password");
+        }
     
-
+	}
 } 

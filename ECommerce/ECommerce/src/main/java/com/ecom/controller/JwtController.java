@@ -1,5 +1,8 @@
 package com.ecom.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,31 +16,66 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.JwtRequest;
 import com.ecom.entity.JwtResponse;
 import com.ecom.entity.User;
+import com.ecom.service.Emailservice;
 import com.ecom.service.JwtService;
+import com.ecom.service.TokenService;
+import com.ecom.service.UserService;
 
 @RestController
 @CrossOrigin
 public class JwtController {
 
-    @Autowired
-    private JwtService jwtService;
+	@Autowired
+	private JwtService jwtService;
 
-    @PostMapping("/authenticate")
-    public JwtResponse createJwtToken(@RequestBody JwtRequest user) throws Exception {
-    	System.out.println("name"+user.getUserName());
-    	 System.out.println("Received UserName: " + user.getUserName());
-         System.out.println("Received Password: " + user.getUserPassword());
+	@Autowired
+	private UserService Service;
+	
+	 @Autowired
+	    private TokenService tokenService;
+	    
+	    @Autowired
+	    private Emailservice emailService;
 
-         if (user.getUserName() == null || user.getUserPassword() == null) {
-            System.out.println("null data");
-         }
-        return jwtService.createJwtToken(user);
-    }
-    
+	@PostMapping("/authenticate")
+	public JwtResponse createJwtToken(@RequestBody JwtRequest user) throws Exception {
+		System.out.println("name" + user.getUserName());
+		System.out.println("Received UserName: " + user.getUserName());
+		System.out.println("Received Password: " + user.getUserPassword());
+
+		if (user.getUserName() == null || user.getUserPassword() == null) {
+			System.out.println("null data");
+		}
+		return jwtService.createJwtToken(user);
+	}
+
 //    @PreAuthorize("hasRole('User')")
-    @GetMapping({"/getdata/{token}"})
-    public User getdata(@PathVariable("token") String token) {
-    	return jwtService.getdata(token);
-    	
-    }
+	@GetMapping({ "/getdata/{token}" })
+	public User getdata(@PathVariable("token") String token) {
+		return jwtService.getdata(token);
+
+	}
+
+	@PostMapping("/registerNewUser")
+	public User postMethodName(@RequestBody User user) {
+		System.out.println("controler");
+		return Service.registerNewUser(user);
+//        return entity;
+	}
+	
+	 @GetMapping("/validate-token/{token}")
+	    public ResponseEntity<?> validateToken(@PathVariable(value = "token") String token) {
+	    	System.err.println("token--"+token);
+//	    	System.err.println("email--"+tokenService.getemail(token));
+	        String email = tokenService.validateToken(token);
+	        System.err.println(email);
+	        if (email != null) {
+	            Map<String, String> response = new HashMap<>();
+	            response.put("email", email);
+	            return ResponseEntity.ok(response);
+	        } else {
+	            return ResponseEntity.badRequest().body("Invalid or expired token");
+	        }
+	    }
+	 
 }

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 //import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,13 +29,7 @@ public class AdminController {
 	@Autowired
 	private AdminService adminservice;
 
-//	@PreAuthorize("hasRole('Admin')")
-//	@GetMapping({"/admin/getAlluser"})
-//	public List<User> getalluser() {
-//		
-//		return adminservice.getAllUser();	
-//	}
-	
+
 	
 	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/getAllUsersPageWise")
@@ -53,5 +49,21 @@ public class AdminController {
 			System.err.println("delete controller--"+userName);
 	    	adminservice.deleteUser(userName);
 	        return ResponseEntity.noContent().build(); // Return 204 No Content
+	    }
+	    
+	    @PreAuthorize("hasRole('Admin')")
+	    @PutMapping("/updateUser")
+	    public String updateUser(@RequestBody User user) {
+	    	//TODO: process PUT request
+	    	System.out.println(user.getEmail());
+	    	return adminservice.updateUser(user);
+	    }
+	    
+	    @PreAuthorize("hasRole('Admin')")
+	    @GetMapping("/getuser/{name}")
+	    public User getUser(@PathVariable("name") String name  ) {
+	    	//TODO: process PUT request
+	    	System.out.println(name);
+	    	return adminservice.getuser(name);
 	    }
 }

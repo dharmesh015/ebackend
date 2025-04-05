@@ -67,21 +67,13 @@ public class Emailservice {
     }
     
     public String sendPasswordResetEmail(String toEmail) {
-        try {
+       
             User user = userdao.findByEmail(toEmail);
             if (user == null) {
-                System.err.println("User  not found");
-                return "User  not found";
+                return "UNF"; // Ensure this matches the frontend check
             }
             
-           
             String resetToken = tokenService.generatePasswordResetToken(user.getEmail());
-            System.err.println("Generated Token: " + resetToken);
-            
-            // Validate the token immediately after generation
-            String validatedEmail = tokenService.validateToken(resetToken);
-            System.err.println("Validated Email: " + validatedEmail);
-            
             String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
             
             SimpleMailMessage message = new SimpleMailMessage();
@@ -91,16 +83,13 @@ public class Emailservice {
             message.setText("Hello " + user.getUserName() + ",\n\n" +
                     "You requested to reset your password. Please click the link below to reset your password:\n\n" +
                     resetLink + "\n\n" +
-                    "This link will expire in 10 minutes.\n\n" + // Update to 10 minutes
+                    "This link will expire in 10 minutes.\n\n" +
                     "If you did not request a password reset, please ignore this email.\n\n" +
                     "Thank you,\nYour Application Team");
             
             mailSender.send(message);
-            return "Success";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
+            return "S"; // Ensure this matches the frontend check
+        
     }
     
     

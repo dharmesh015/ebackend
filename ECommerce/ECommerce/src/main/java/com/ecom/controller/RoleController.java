@@ -16,19 +16,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
     
-    @Autowired
-    private UserService Service;
+
 
     @PostMapping("/createNewRole")
     public Role createNewRole(@RequestBody Role role) {
         return roleService.createNewRole(role);
     }
     
-    @PostMapping("/registerNewUser")
-    public User postMethodName(@RequestBody User user) {
-       System.out.println("controler");
-    	return Service.registerNewUser(user);
-//        return entity;
-    }
+   
     
 }
