@@ -2,6 +2,7 @@ package com.ecom.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ecom.configuration.JwtRequestFilter;
+import com.ecom.dao.CartDao;
 import com.ecom.dao.OrderDetailDao;
 import com.ecom.dao.ProductDao;
 import com.ecom.dao.UserDao;
+import com.ecom.entity.Cart;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
@@ -30,14 +34,18 @@ public class ProductService {
     @Autowired
     private UserDao userdao;
     
+    @Autowired
+    private CartDao cartdao;
+    
     
     @Autowired
     private OrderDetailDao orderdetaildao;
+    @Autowired
+    private OrderDetailService orderDetailService;
 
     @Transactional
     public Product addNewProduct(Product product) {
-        // Ensure the product is saved correctly
-//    	System.out.println(product.);
+
         return productDao.save(product);        
     }
 
@@ -51,8 +59,8 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(Long productId) {
-    	
-    	orderdetaildao.deleteById(productId);
+    
+        orderDetailService.deleteOrderDetailsByProductId(productId); // Delete related orders first
         productDao.deleteById(productId);
     }
     
@@ -65,11 +73,11 @@ public class ProductService {
             throw new RuntimeException("Product not found with id: " + product.getProductId());
         }
     }
-    
+   
+
     public Product getProductById(Long productId) {
-        // Logic to retrieve the product from the database
-        // For example, using a repository:
-        return productDao.findById(productId).orElse(null);
+        Optional<Product> product = productDao.findById(productId);
+        return product.orElse(null);
     }
     
     public List<Product> getProductDetails(boolean isSingeProductCheckout, Integer productId) {
@@ -113,6 +121,19 @@ public class ProductService {
   // Return a new Page with the updated order details	 
 //	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
 }
-	
+	public List<Cart> getCartDetails() {
+        String username = getCurrentUsername();
+        User user = userdao.findById(username).orElse(null);
+        if (user != null) {
+            return cartdao.findByUser(user);
+        }
+        return null;
+    }
+    
+    private String getCurrentUsername() {
+        // This should be implemented based on your security setup
+        // Usually this would get the authenticated user from the Security Context
+        return JwtRequestFilter.CURRENT_USER; // Replace with actual implementation
+    }
 
 }

@@ -29,11 +29,11 @@ public class OrderDetailController {
 	
 	
 	@PreAuthorize("hasRole('User')")
-	@PostMapping({"/placeOrder"})
-	public void placeOrder( @RequestBody OrderInput orderInput) {
+	@PostMapping({"/placeOrder/{issingleProducrCheckout}"})
+	public void placeOrder(@PathVariable("issingleProducrCheckout") boolean issingleProducrCheckout, @RequestBody OrderInput orderInput) {
 		
 		System.out.println("place order controller");
-		orderDetailService.placeOrder(orderInput);
+		orderDetailService.placeOrder(orderInput,issingleProducrCheckout);
 		
 	}
 	

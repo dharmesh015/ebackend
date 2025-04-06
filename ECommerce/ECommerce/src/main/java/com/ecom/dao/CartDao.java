@@ -1,0 +1,19 @@
+package com.ecom.dao;
+
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.ecom.entity.Cart;
+import com.ecom.entity.Product;
+import com.ecom.entity.User;
+
+@Repository
+public interface CartDao extends CrudRepository<Cart, Long>{
+	
+	public List<Cart> findByUser(User user);
+
+	public List<Cart> findByUserAndProduct(User user, Product product);
+
+}

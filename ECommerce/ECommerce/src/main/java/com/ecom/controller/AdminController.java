@@ -51,7 +51,7 @@ public class AdminController {
 	        return ResponseEntity.noContent().build(); // Return 204 No Content
 	    }
 	    
-	    @PreAuthorize("hasRole('Admin')")
+//	    @PreAuthorize("hasRole('Admin')")
 	    @PutMapping("/updateUser")
 	    public String updateUser(@RequestBody User user) {
 	    	//TODO: process PUT request

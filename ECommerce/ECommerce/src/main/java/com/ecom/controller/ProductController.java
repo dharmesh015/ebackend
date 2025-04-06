@@ -1,6 +1,7 @@
 package com.ecom.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.ecom.entity.Cart;
 import com.ecom.entity.ImageModel;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
@@ -102,26 +104,58 @@ public class ProductController {
         }
     }
 	
-	 @GetMapping("/getProductById/{productId}")
-	    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
-	        Product product = productService.getProductById(productId);
-	        if (product != null) {
-	            return ResponseEntity.ok(product);
-	        } else {
-	            return ResponseEntity.notFound().build();
-	        }
+	///ahi change hee
+//	 @GetMapping("/getProductById/{productId}")
+//	    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
+//	        Product product = productService.getProductById(productId);
+//	        if (product != null) {
+//	            return ResponseEntity.ok(product);
+//	        } else {
+//	            return ResponseEntity.notFound().build();
+//	        }
+//	    }
+//	 
+	 @GetMapping({"/getProductById/{productId}"})
+	    public Product getProductById(@PathVariable("productId") Long productId) {
+	        return productService.getProductById(productId);
 	    }
 	 
+	 //ahe change hee
 //	 @PreAuthorize("hasRole('User')")
-		@GetMapping({"/getProductDetails/{isSingeProductCheckout}/{productId}"})
-		public List<Product> getProductDetails(@PathVariable(name="isSingeProductCheckout") boolean isSingeProductCheckout,
-											@PathVariable(name= "productId") Integer productId) {
-			
-			return productService.getProductDetails(isSingeProductCheckout, productId);
-			
-			
-		}
-		
+//		@GetMapping({"/getProductDetails/{isSingeProductCheckout}/{productId}"})
+//		public List<Product> getProductDetails(@PathVariable(name="isSingeProductCheckout") boolean isSingeProductCheckout,
+//											@PathVariable(name= "productId") Integer productId) {
+//			
+//			return productService.getProductDetails(isSingeProductCheckout, productId);
+//			
+//			
+//		}
+	 @PreAuthorize("hasRole('User')")
+	    @GetMapping({"/getProductDetails/{isSingleProductCheckout}/{productId}"})
+	    public List<Product> getProductDetails(
+	            @PathVariable(name = "isSingleProductCheckout") boolean isSingleProductCheckout,
+	            @PathVariable(name = "productId") Long productId) {
+	        
+	        List<Product> products = new ArrayList<>();
+	        
+	        if (isSingleProductCheckout && productId != 0) {
+	            // Single product checkout
+	            Product product = productService.getProductById(productId);
+	            products.add(product);
+	        } else {
+	            // Cart checkout - get all products from user's cart
+	            // Assuming you have a method to get the current user's cart items
+	            List<Cart> carts = productService.getCartDetails();
+	            
+	            if (carts != null) {
+	                for (Cart cart : carts) {
+	                    products.add(cart.getProduct());
+	                }
+	            }
+	        }
+	        
+	        return products;
+	    }
 		
 		@GetMapping("/getAllProductsPageWise")
 	    public Page<Product> getAllProducts(

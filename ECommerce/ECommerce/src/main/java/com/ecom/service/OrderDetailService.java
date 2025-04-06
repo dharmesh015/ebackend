@@ -9,12 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.configuration.JwtRequestFilter;
+import com.ecom.dao.CartDao;
 //import com.ecom.dao.CartDao;
 import com.ecom.dao.OrderDetailDao;
 import com.ecom.dao.ProductDao;
 import com.ecom.dao.UserDao;
+import com.ecom.entity.Cart;
 //import com.ecom.entity.Cart;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.OrderInput;
@@ -36,8 +39,8 @@ public class OrderDetailService {
 	@Autowired
 	private UserDao userDao;
 	
-//	@Autowired
-//	private CartDao cartDao;
+	@Autowired
+	private CartDao cartDao;
 	
 	public List<OrderDetail> getAllOrderDetails(){
 		List<OrderDetail> orderDetails = new ArrayList<>();
@@ -53,7 +56,7 @@ public class OrderDetailService {
 		return orderDetailDao.findByUser(user);
 	}
 	
-	public void placeOrder(OrderInput orderInput) {
+	public void placeOrder(OrderInput orderInput,boolean isSingleProductCheckout) {
 		System.out.println("place order service");
 	List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
 	
@@ -73,11 +76,12 @@ public class OrderDetailService {
 					product,
 				user);
 		
-//		if(!isSingleProductCheckout) {
-//				List<Cart> carts= cartDao.findByUser(user);
-//			carts.stream().forEach(x -> cartDao.deleteById(x.getCartId()));			
-////				
-////			}
+		if(!isSingleProductCheckout) {
+				
+				List<Cart> carts= cartDao.findByUser(user);
+			carts.stream().forEach(x -> cartDao.deleteById(x.getCartId()));			
+				
+			}
 			orderDetailDao.save(orderDetail);
 //		}
 	}
@@ -101,5 +105,16 @@ public class OrderDetailService {
 	    // Return a new Page with the updated order details
 	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
 	}
+	
+	 @Transactional // Add Transactional annotation
+	    public void deleteOrderDetailsByProductId(Long productId) {
+	        orderDetailDao.deleteByProduct_ProductId(productId);
+	    }
+
+	    @Transactional
+	    public void deleteProductAndRelatedOrders(Long productId) {
+	        deleteOrderDetailsByProductId(productId);
+	        productDao.deleteById(productId);
+	    }
 
 }

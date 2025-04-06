@@ -19,6 +19,8 @@ public interface OrderDetailDao extends CrudRepository<OrderDetail, Long>{
 	
 //	Page<Product> findByUserName(String userName);
 	Page<OrderDetail> findByUser(User user, Pageable pageable);
+
+	public void deleteByProduct_ProductId(Long productId);
 	
 
 }
