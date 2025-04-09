@@ -73,7 +73,7 @@ public class Emailservice {
                 return "UNF"; // Ensure this matches the frontend check
             }
             
-            String resetToken = tokenService.generatePasswordResetToken(user.getEmail());
+            String resetToken = tokenService.generatePasswordResetToken(user.getEmail(),user.getUserPassword());
             String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
             
             SimpleMailMessage message = new SimpleMailMessage();

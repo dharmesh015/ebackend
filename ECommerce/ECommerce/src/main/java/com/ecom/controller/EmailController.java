@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecom.dao.UserDao;
 import com.ecom.entity.EmailRequest;
 import com.ecom.entity.PasswordResetRequest;
 import com.ecom.service.Emailservice;
 import com.ecom.service.TokenService;
+import com.ecom.service.UserService;
 
 
 @RestController
@@ -25,7 +27,10 @@ public class EmailController {
 	public Emailservice emailService;
 	
 	 @Autowired
-	    private TokenService tokenService;
+	  private TokenService tokenService;
+	 
+	 @Autowired
+	  private UserDao userdao;
 	    
 	 
 	
@@ -33,7 +38,7 @@ public class EmailController {
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
 		System.out.println("send email--"+request.getEmail());
         String result = emailService.sendPasswordResetEmail(request.getEmail());
-        
+       
         if (result.equals("UNF")) {
             return ResponseEntity.ok("UNF");
         } else if (result.equals("S")) {

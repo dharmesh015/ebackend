@@ -155,13 +155,5 @@ public class ProductController {
 		return productService.getAllProductsPageWiseByUser(pageable);
 	}
 	
-	@GetMapping({ "/getallproduct/{username}" })
-	public Page<Product> getProducts(@PathVariable("username") String username,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "orderId") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
-		System.err.println("orderdetails controller" + username);
-		Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, "orderDate");
-		PageRequest pageable = PageRequest.of(page, size, sort);
-		return productService.getproductbyusername(username, pageable);
-	}
+	
 }

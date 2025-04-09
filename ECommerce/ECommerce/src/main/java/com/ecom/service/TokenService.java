@@ -4,8 +4,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.ecom.dao.UserDao;
+import com.ecom.entity.User;
 
 import java.security.Key;
 import java.util.Date;
@@ -16,12 +21,13 @@ import java.util.Map;
 
 public class TokenService {
 
-
+  @Autowired
+  private UserDao userdao;
     @Value("${app.jwt.reset.secret:skdnwjfkswmdnwdiejfbfuewddvqyvwyvwdjwdbjenweuweb}")
     private String jwtSecret;
     
    
-    private final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    private final long EXPIRATION_TIME = 10*60 * 1000;
     
 
     private Key getSigningKey() {
@@ -30,10 +36,10 @@ public class TokenService {
     }
 
  
-    public String generatePasswordResetToken(String email) {
+    public String generatePasswordResetToken(String email,String password) {
     	System.err.println("generatePasswordResetToken"+email);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("purpose", "password_reset");
+        claims.put("purpose", password);
         
         return Jwts.builder()
                 .setClaims(claims)
@@ -53,8 +59,9 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
             
-            
-            if (!"password_reset".equals(claims.get("purpose"))) {
+            String email = claims.getSubject();
+            User user = userdao.findByEmail(email);
+            if (!user.getUserPassword().equals(claims.get("purpose"))) {
                 return null;
             }
             
