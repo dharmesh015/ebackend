@@ -137,6 +137,7 @@ package com.ecom.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class OrderDetail {
@@ -160,7 +161,8 @@ public class OrderDetail {
     private User user;
 
     @Column(name = "order_date")
-    private LocalDate orderDate; // New field to store the order date
+//    @Temporal(TemporalType.DATE)
+    private LocalDateTime orderDate; // New field to store the order date
 
     public OrderDetail() {
         super();
@@ -183,7 +185,7 @@ public class OrderDetail {
     // PrePersist method to set the order date before persisting
     @PrePersist
     protected void onCreate() {
-        this.orderDate = LocalDate.now(); // Set the current date
+        this.orderDate = LocalDateTime.now(); // Set the current date
     }
 
     // Getters and Setters
@@ -259,11 +261,11 @@ public class OrderDetail {
         this.user = user;
     }
 
-    public LocalDate getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 }

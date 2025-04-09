@@ -21,7 +21,7 @@ public interface ProductDao extends CrudRepository<Product, Long>{
 		String key1, String key2, Pageable pageable);
 //	
 
-//	public  Page<Product> findByUser(User user, Pageable pageable) ;
+//	 Page<Product> findBySellername(String username, Pageable pageable);
 
 	public  Page<Product> findBySellername(String username, Pageable pageable) ;
 }

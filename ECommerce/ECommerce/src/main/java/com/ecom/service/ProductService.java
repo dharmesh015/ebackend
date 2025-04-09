@@ -106,8 +106,16 @@ public class ProductService {
     	System.err.println("pagewise service");
     	System.err.println(productDao.findAll(pageable));
     	 return productDao.findAll(pageable); 
+//    	 
      
     }
+    public Page<Product> getAllProductsPageWiseByUser(Pageable pageable) {
+    	System.err.println("pagewise service");
+    	System.err.println(productDao.findAll(pageable));
+//    	 return productDao.findAll(pageable); 
+    	 return productDao.findBySellername(getCurrentUsername(), pageable); 
+    }
+    
 
 
 	
@@ -117,9 +125,7 @@ public class ProductService {
 	    System.err.println("Fetching products for user name: " + username);
 
 	   return products;
-//	    System.out.print( updatedOrderDetails.getFirst().getOrderDate());
-  // Return a new Page with the updated order details	 
-//	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
+
 }
 	public List<Cart> getCartDetails() {
         String username = getCurrentUsername();
@@ -131,9 +137,8 @@ public class ProductService {
     }
     
     private String getCurrentUsername() {
-        // This should be implemented based on your security setup
-        // Usually this would get the authenticated user from the Security Context
-        return JwtRequestFilter.CURRENT_USER; // Replace with actual implementation
+    
+        return JwtRequestFilter.CURRENT_USER; 
     }
 
 }
