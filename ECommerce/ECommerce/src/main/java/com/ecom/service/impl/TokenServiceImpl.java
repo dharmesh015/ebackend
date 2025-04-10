@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecom.dao.UserDao;
 import com.ecom.entity.User;
+import com.ecom.service.TokenService;
 
 import java.security.Key;
 import java.util.Date;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Service
 
-public class TokenService {
+public class TokenServiceImpl implements TokenService{
 
   @Autowired
   private UserDao userdao;
@@ -72,7 +73,7 @@ public class TokenService {
         }
     }
     
-    public  String getemail(String token) {
+    public  String getEmail(String token) {
     	Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -80,4 +81,7 @@ public class TokenService {
                 .getBody();
     	  return claims.getSubject();
     }
+
+
+	
 }

@@ -18,9 +18,11 @@ import com.ecom.entity.JwtResponse;
 import com.ecom.entity.User;
 import com.ecom.proxy.UserProxy;
 import com.ecom.service.JwtService;
+import com.ecom.service.TokenService;
+import com.ecom.service.UserService;
 import com.ecom.service.impl.EmailserviceImpl;
-import com.ecom.service.impl.TokenService;
-import com.ecom.service.impl.UserService;
+//import com.ecom.service.impl.TokenService;
+//import com.ecom.service.impl.UserService;
 
 @RestController
 @CrossOrigin

@@ -15,6 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ImageModel {
 	
+	
+
+
+
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

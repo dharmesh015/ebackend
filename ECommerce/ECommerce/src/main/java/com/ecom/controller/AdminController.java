@@ -55,7 +55,7 @@ public class AdminController {
 
 	@PutMapping("/updateUser")
 	public String updateUser(@RequestBody UserProxy userProxy) {
-		System.out.println(userProxy.getEmail());
+//		System.out.println(userProxy.getEmail());
 		return adminservice.updateUser(userProxy);
 	}
 

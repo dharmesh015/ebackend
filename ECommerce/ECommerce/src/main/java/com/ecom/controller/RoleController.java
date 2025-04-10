@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.Role;
 import com.ecom.entity.User;
 import com.ecom.proxy.RoleProxy;
-import com.ecom.service.impl.RoleService;
-import com.ecom.service.impl.UserService;
+import com.ecom.service.RoleService;
+//import com.ecom.service.impl.RoleService;
+//import com.ecom.service.impl.UserService;
 
 @RestController
 public class RoleController {

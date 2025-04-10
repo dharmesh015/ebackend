@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderInput {
 	
+	
 	private String fullName;
 	private String fullAddress;
 	private String contactNumber;

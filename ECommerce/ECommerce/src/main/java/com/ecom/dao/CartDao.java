@@ -11,7 +11,7 @@ import com.ecom.entity.User;
 
 @Repository
 public interface CartDao extends CrudRepository<Cart, Long>{
-	
+	void deleteByUser(User user);
 	public List<Cart> findByUser(User user);
 
 	public List<Cart> findByUserAndProduct(User user, Product product);

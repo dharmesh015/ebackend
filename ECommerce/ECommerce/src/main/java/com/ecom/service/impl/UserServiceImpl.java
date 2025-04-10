@@ -10,6 +10,7 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.Role;
 import com.ecom.entity.User;
 import com.ecom.proxy.UserProxy;
+import com.ecom.service.UserService;
 import com.ecom.util.MapperUtil;
 
 import jakarta.annotation.PostConstruct;
@@ -18,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserDao userDao;

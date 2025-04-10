@@ -21,7 +21,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserImage {
 
-    @Id
+   
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     

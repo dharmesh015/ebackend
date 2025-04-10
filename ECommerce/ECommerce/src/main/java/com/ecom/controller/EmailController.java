@@ -14,9 +14,10 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.EmailRequest;
 import com.ecom.entity.PasswordResetRequest;
 import com.ecom.service.EmailService;
+import com.ecom.service.TokenService;
 import com.ecom.service.impl.EmailserviceImpl;
-import com.ecom.service.impl.TokenService;
-import com.ecom.service.impl.UserService;
+
+//import com.ecom.service.impl.UserService;
 
 
 @RestController
@@ -37,7 +38,7 @@ public class EmailController {
 	
 	@PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
-		System.out.println("send email--"+request.getEmail());
+//		System.out.println("send email--"+request.getEmail());
         String result = emailService.sendPasswordResetEmail(request.getEmail());
        
         if (result.equals("UNF")) {

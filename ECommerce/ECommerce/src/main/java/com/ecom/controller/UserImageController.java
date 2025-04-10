@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecom.service.impl.UserImageService;
+import com.ecom.service.UserImageService;
+
+//import com.ecom.service.impl.UserImageService;
 
 import java.io.IOException;
 

@@ -3,6 +3,7 @@ package com.ecom.service.impl;
 import com.ecom.dao.UserImageDao;
 import com.ecom.dao.UserDao;
 import com.ecom.entity.UserImage;
+import com.ecom.service.UserImageService;
 import com.ecom.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-public class UserImageService {
+public class UserImageServiceImpl implements UserImageService{
 
     @Autowired
     private UserImageDao userImageRepository;

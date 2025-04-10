@@ -149,7 +149,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderDetail {
 	
-    @Id
+   
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private String orderFullName;

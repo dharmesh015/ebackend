@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class Role {
 
+	
 	@Id
     private String roleName;
     private String roleDescription;

@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import com.ecom.dao.RoleDao;
 import com.ecom.entity.Role;
 import com.ecom.proxy.RoleProxy;
+import com.ecom.service.RoleService;
 import com.ecom.util.MapperUtil;
 
 @Service
-public class RoleService {
+public class RoleServiceImpl implements RoleService{
 
     @Autowired
     private RoleDao roleDao;
