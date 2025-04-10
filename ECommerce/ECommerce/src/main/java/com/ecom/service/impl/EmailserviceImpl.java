@@ -1,4 +1,4 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.ecom.dao.UserDao;
 import com.ecom.entity.User;
+import com.ecom.service.EmailService;
 
 @Service
-public class Emailservice {
+public class EmailserviceImpl implements EmailService{
 	@Autowired
 	private UserDao userdao;
 	
@@ -30,32 +31,6 @@ public class Emailservice {
 	@Autowired
 	private TokenService tokenService;
 
-//    public void sendEmail() {
-//    	
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom(sender);
-//        message.setTo("dharmeshgelatardhirajlal@gmail.com");
-//        message.setSubject("check to send email by spring boot");
-//        message.setText("done it reach to you");
-//
-//        mailSender.send(message);
-//    }
-//    
-//    public String sendEmail(String toEmail) {
-//        User byEmail = userdao.findByEmail(toEmail);
-//
-//        if (byEmail == null) {
-//            return "User  not found"; // Return a specific message
-//        }
-//        
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(toEmail);
-//        message.setSubject("Password Reset Request");
-//        message.setText("Please click the link to reset your password.");
-//        mailSender.send(message);
-//        
-//        return "Successfully sent email"; // Return a success message
-//    }
     
     public void sendTestEmail() {
         SimpleMailMessage message = new SimpleMailMessage();

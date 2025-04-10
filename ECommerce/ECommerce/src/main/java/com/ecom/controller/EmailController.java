@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.dao.UserDao;
 import com.ecom.entity.EmailRequest;
 import com.ecom.entity.PasswordResetRequest;
-import com.ecom.service.Emailservice;
-import com.ecom.service.TokenService;
-import com.ecom.service.UserService;
+import com.ecom.service.EmailService;
+import com.ecom.service.impl.EmailserviceImpl;
+import com.ecom.service.impl.TokenService;
+import com.ecom.service.impl.UserService;
 
 
 @RestController
@@ -24,7 +25,7 @@ public class EmailController {
 
 	
 	@Autowired
-	public Emailservice emailService;
+	public EmailService emailService;
 	
 	 @Autowired
 	  private TokenService tokenService;

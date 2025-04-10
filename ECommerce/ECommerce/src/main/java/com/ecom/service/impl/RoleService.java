@@ -1,4 +1,4 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

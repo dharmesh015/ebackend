@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.Cart;
 import com.ecom.proxy.CartProxy;
 import com.ecom.service.CartService;
+import com.ecom.service.impl.CartServiceImpl;
 
 @RestController
 public class CartController {

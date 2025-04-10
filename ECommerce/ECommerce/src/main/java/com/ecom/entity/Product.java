@@ -34,7 +34,7 @@ public class Product {
 	private Double productDiscountedPrice;
 	private Double productActualPrice;
 	private String sellername;
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "product_images", joinColumns = { @JoinColumn(name = "product_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "image_id") })
 	private Set<ImageModel> productImages;

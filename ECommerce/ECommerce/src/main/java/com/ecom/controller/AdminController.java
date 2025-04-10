@@ -24,6 +24,7 @@ import com.ecom.entity.User;
 import com.ecom.proxy.ProductProxy;
 import com.ecom.proxy.UserProxy;
 import com.ecom.service.AdminService;
+import com.ecom.service.impl.AdminServiceImpl;
 import com.ecom.util.MapperUtil;
 
 @RestController

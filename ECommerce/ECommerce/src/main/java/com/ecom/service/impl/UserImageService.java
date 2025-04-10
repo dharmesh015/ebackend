@@ -1,4 +1,4 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 
 import com.ecom.dao.UserImageDao;
 import com.ecom.dao.UserDao;
