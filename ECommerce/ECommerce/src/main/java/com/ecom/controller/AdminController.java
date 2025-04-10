@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
+import com.ecom.proxy.ProductProxy;
+import com.ecom.proxy.UserProxy;
 import com.ecom.service.AdminService;
+import com.ecom.util.MapperUtil;
 
 @RestController
 @CrossOrigin
@@ -29,41 +33,35 @@ public class AdminController {
 	@Autowired
 	private AdminService adminservice;
 
+	@Autowired
+	private MapperUtil mapper;
 
-	
 	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/getAllUsersPageWise")
-    public Page<Product> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        System.err.println("pagewise controller");
-//        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
-        PageRequest pageable = PageRequest.of(page, size);
-        return adminservice.getAllProductsPageWise(pageable);
-    }
-	
+	public Page<UserProxy> getAlluser(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		PageRequest pageable = PageRequest.of(page, size);
+		return adminservice.getAllUsersPageWise(pageable);
+	}
 
-	    @PreAuthorize("hasRole('Admin')")
-		@DeleteMapping("/deleteUser/{userName}")
-	    public ResponseEntity<Void> deleteUserByUserName(@PathVariable ("userName")String userName) {
-			System.err.println("delete controller--"+userName);
-	    	adminservice.deleteUser(userName);
-	        return ResponseEntity.noContent().build(); // Return 204 No Content
-	    }
-	    
-//	    @PreAuthorize("hasRole('Admin')")
-	    @PutMapping("/updateUser")
-	    public String updateUser(@RequestBody User user) {
-	    	//TODO: process PUT request
-	    	System.out.println(user.getEmail());
-	    	return adminservice.updateUser(user);
-	    }
-	    
-	    @PreAuthorize("hasRole('Admin')")
-	    @GetMapping("/getuser/{name}")
-	    public User getUser(@PathVariable("name") String name  ) {
-	    	//TODO: process PUT request
-	    	System.out.println(name);
-	    	return adminservice.getuser(name);
-	    }
+	@PreAuthorize("hasRole('Admin')")
+	@DeleteMapping("/deleteUser/{userName}")
+	public ResponseEntity<Void> deleteUserByUserName(@PathVariable("userName") String userName) {
+		System.err.println("delete controller--" + userName);
+		adminservice.deleteUser(userName);
+		return ResponseEntity.noContent().build(); // Return 204 No Content
+	}
+
+	@PutMapping("/updateUser")
+	public String updateUser(@RequestBody UserProxy userProxy) {
+		System.out.println(userProxy.getEmail());
+		return adminservice.updateUser(userProxy);
+	}
+
+	@PreAuthorize("hasRole('Admin')")
+	@GetMapping("/getuser/{name}")
+	public UserProxy getUser(@PathVariable("name") String name) {
+
+		return adminservice.getuser(name);
+	}
 }

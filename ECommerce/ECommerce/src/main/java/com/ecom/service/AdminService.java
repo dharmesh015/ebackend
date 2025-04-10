@@ -2,7 +2,7 @@ package com.ecom.service;
 
 import java.util.List;
 import java.util.Optional;
-
+import com.ecom.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +14,12 @@ import com.ecom.dao.UserDao;
 import com.ecom.dao.UserImageDao;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
+import com.ecom.proxy.UserProxy;
 
 @Service
 public class AdminService {
+
+    private final MapperUtil mapperUtil;
 
 	
 	
@@ -30,6 +33,11 @@ public class AdminService {
 	
 	@Autowired
 	private UserImageDao imageDao;
+
+
+    AdminService(MapperUtil mapperUtil) {
+        this.mapperUtil = mapperUtil;
+    }
 	
 	
 	public List<User> getAllUser(){
@@ -37,7 +45,7 @@ public class AdminService {
 	}
 
 
-	public Page<Product> getAllProductsPageWise(PageRequest pageable) {
+	public Page<UserProxy> getAllUsersPageWise(PageRequest pageable) {
 		System.err.println("pagewise service");
 //    	System.err.println(userDao.findAll(pageable));
     	 return userDao.findAll(pageable); 
@@ -55,9 +63,8 @@ public class AdminService {
     }
 	
 	
-	public String updateUser(User user) {
+	public String updateUser(UserProxy user) {
 		 User userobj = userDao.findById(user.getUserName()).orElseThrow(() -> new RuntimeException("User  not found"));
-	        
 		 userobj.setUserPassword(userobj.getUserPassword()); 
 		 userobj.setRole(userobj.getRole());
 		 userobj.setEmail(user.getEmail());
@@ -72,8 +79,8 @@ public class AdminService {
 	}
 
 
-	public User getuser(String name) {
+	public UserProxy getuser(String name) {
 		Optional<User> userdata = userDao.findById(name);
-		return userdata.get();
+		return  mapperUtil.convertValue( userdata.get(),UserProxy.class);
 	}
 }

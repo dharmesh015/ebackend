@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.JwtRequest;
 import com.ecom.entity.JwtResponse;
 import com.ecom.entity.User;
+import com.ecom.proxy.UserProxy;
 import com.ecom.service.Emailservice;
 import com.ecom.service.JwtService;
 import com.ecom.service.TokenService;
@@ -30,12 +31,12 @@ public class JwtController {
 
 	@Autowired
 	private UserService Service;
-	
-	 @Autowired
-	    private TokenService tokenService;
-	    
-	    @Autowired
-	    private Emailservice emailService;
+
+	@Autowired
+	private TokenService tokenService;
+
+	@Autowired
+	private Emailservice emailService;
 
 	@PostMapping("/authenticate")
 	public JwtResponse createJwtToken(@RequestBody JwtRequest user) throws Exception {
@@ -49,33 +50,30 @@ public class JwtController {
 		return jwtService.createJwtToken(user);
 	}
 
-//    @PreAuthorize("hasRole('User')")
 	@GetMapping({ "/getdata/{token}" })
-	public User getdata(@PathVariable("token") String token) {
+	public UserProxy getdata(@PathVariable("token") String token) {
 		return jwtService.getdata(token);
 
 	}
 
 	@PostMapping("/registerNewUser")
-	public User postMethodName(@RequestBody User user) {
+	public UserProxy registerNewUser(@RequestBody UserProxy user) {
 		System.out.println("controler");
 		return Service.registerNewUser(user);
-//        return entity;
 	}
-	
-	 @GetMapping("/validate-token/{token}")
-	    public ResponseEntity<?> validateToken(@PathVariable(value = "token") String token) {
-	    	System.err.println("token--"+token);
-//	    	System.err.println("email--"+tokenService.getemail(token));
-	        String email = tokenService.validateToken(token);
-	        System.err.println(email);
-	        if (email != null) {
-	            Map<String, String> response = new HashMap<>();
-	            response.put("email", email);
-	            return ResponseEntity.ok(response);
-	        } else {
-	            return ResponseEntity.badRequest().body("Invalid or expired token");
-	        }
-	    }
-	 
+
+	@GetMapping("/validate-token/{token}")
+	public ResponseEntity<?> validateToken(@PathVariable(value = "token") String token) {
+		System.err.println("token--" + token);
+		String email = tokenService.validateToken(token);
+		System.err.println(email);
+		if (email != null) {
+			Map<String, String> response = new HashMap<>();
+			response.put("email", email);
+			return ResponseEntity.ok(response);
+		} else {
+			return ResponseEntity.badRequest().body("Invalid or expired token");
+		}
+	}
+
 }

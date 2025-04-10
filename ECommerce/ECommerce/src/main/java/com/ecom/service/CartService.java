@@ -14,6 +14,8 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.Cart;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
+import com.ecom.proxy.CartProxy;
+import com.ecom.util.MapperUtil;
 
 @Service
 public class CartService {
@@ -27,23 +29,28 @@ public class CartService {
     @Autowired
     private UserDao userDao;
     
-    public Cart addtoCart(Long productId) {
+    @Autowired
+    private  MapperUtil mapperUtil;
+    
+    public CartProxy addtoCart(Long productId) {
     	System.out.println("add to cart service");
         Product product = productDao.findById(productId).orElse(null);
         User user = userDao.findById(getCurrentUsername()).orElse(null);
         
         if (product != null && user != null) {
-            // Check if product already exists in cart
             List<Cart> existingCartItems = cartDao.findByUserAndProduct(user, product);
             if (!existingCartItems.isEmpty()) {
                 // Product already in cart, could update quantity if needed
-                return existingCartItems.get(0);
+                  return mapperUtil.convertValue(existingCartItems.get(0), CartProxy.class);
+                
             } else {
                 // Add new product to cart
                 Cart newCartItem = new Cart();
                 newCartItem.setProduct(product);
                 newCartItem.setUser(user);
-                return cartDao.save(newCartItem);
+                 cartDao.save(newCartItem);
+//                 userDao.findAll(pageable);  
+                 return mapperUtil.convertValue(newCartItem, CartProxy.class);
             }
         }
         return null;
@@ -53,11 +60,11 @@ public class CartService {
         cartDao.deleteById(cartId);
     }
     
-    public List<Cart> getCartDetails() {
+    public List<CartProxy> getCartDetails() {
         String username = getCurrentUsername();
         User user = userDao.findById(username).orElse(null);
         if (user != null) {
-            return cartDao.findByUser(user);
+            return mapperUtil.convertList(cartDao.findByUser(user),CartProxy.class);
         }
         return null;
     }

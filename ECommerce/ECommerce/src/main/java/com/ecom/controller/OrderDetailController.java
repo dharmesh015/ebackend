@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.OrderInput;
 import com.ecom.entity.Product;
+import com.ecom.proxy.OrderDetailProxy;
 import com.ecom.service.OrderDetailService;
 
 @RestController
@@ -39,20 +40,19 @@ public class OrderDetailController {
 	
 	@PreAuthorize("hasRole('User')")
 	@GetMapping({"/getOrderDetails"})
-	public List<OrderDetail> getOrderDetails() {
+	public List<OrderDetailProxy> getOrderDetails() {
 		return orderDetailService.getOrderDetails();
 	}
 	
 	@PreAuthorize("hasRole('Seller')")
 	@GetMapping({"/getAllOrderDetails"})
-	public List<OrderDetail> getAllOrderDetails() {
+	public List<OrderDetailProxy> getAllOrderDetails() {
 		return orderDetailService.getAllOrderDetails();
 	}
 	
 	
-//	@PreAuthorize("hasRole('User')")
 	@GetMapping({"/getorderdetails/{username}"})
-    public Page<OrderDetail> getProducts(
+    public Page<OrderDetailProxy> getProducts(
     		@PathVariable("username") String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

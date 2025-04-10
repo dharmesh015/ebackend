@@ -24,6 +24,8 @@ import com.ecom.entity.OrderInput;
 import com.ecom.entity.OrderProductQuantity;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
+import com.ecom.proxy.OrderDetailProxy;
+import com.ecom.util.MapperUtil;
 
 @Service
 public class OrderDetailService {
@@ -42,18 +44,20 @@ public class OrderDetailService {
 	@Autowired
 	private CartDao cartDao;
 	
-	public List<OrderDetail> getAllOrderDetails(){
+	@Autowired
+	private MapperUtil mappper;
+	
+	public List<OrderDetailProxy> getAllOrderDetails(){
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		orderDetailDao.findAll().forEach(e -> orderDetails.add(e));
 		
-		return orderDetails;
+		return mappper.convertList(orderDetails,OrderDetailProxy.class);
 	}
 	
-	public List<OrderDetail> getOrderDetails() {
+	public List<OrderDetailProxy> getOrderDetails() {
 		String currentUser = JwtRequestFilter.CURRENT_USER;
 		User user = userDao.findById(currentUser).get();
-		
-		return orderDetailDao.findByUser(user);
+		return  mappper.convertList(orderDetailDao.findByUser(user),OrderDetailProxy.class);
 	}
 	
 	public void placeOrder(OrderInput orderInput,boolean isSingleProductCheckout) {
@@ -88,7 +92,7 @@ public class OrderDetailService {
 	
 	}
 	
-	public Page<OrderDetail> getAllorderPageWise(String username, Pageable pageable) {
+	public Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable) {
 	    User user = userDao.findByUserName(username).get();
 	    Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
 	    System.err.println("Fetching products for user name: " + username);
@@ -96,14 +100,13 @@ public class OrderDetailService {
 	    List<OrderDetail> updatedOrderDetails = products.stream()
 	            .map(orderDetail -> {
 	                if (orderDetail.getProduct() != null) {
-	                    orderDetail.getProduct().setProductImages(null); // Set product images to null
+	                    orderDetail.getProduct().setProductImages(null);
 	                }
-	                return orderDetail; // Return the modified order detail
+	                return orderDetail; 
 	            })
 	            .collect(Collectors.toList());
-	    System.out.print( updatedOrderDetails.getFirst().getOrderDate());
-	    // Return a new Page with the updated order details
-	    return new PageImpl<>(updatedOrderDetails, pageable, products.getTotalElements());
+//             return  products;
+	    return new PageImpl<>(mappper.convertList(updatedOrderDetails, OrderDetailProxy.class), pageable, products.getTotalElements());
 	}
 	
 	 @Transactional // Add Transactional annotation

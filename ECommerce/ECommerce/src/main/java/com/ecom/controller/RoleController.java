@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecom.entity.Role;
 import com.ecom.entity.User;
+import com.ecom.proxy.RoleProxy;
 import com.ecom.service.RoleService;
 import com.ecom.service.UserService;
 
@@ -19,7 +20,7 @@ public class RoleController {
 
 
     @PostMapping("/createNewRole")
-    public Role createNewRole(@RequestBody Role role) {
+    public RoleProxy createNewRole(@RequestBody RoleProxy role) {
         return roleService.createNewRole(role);
     }
     

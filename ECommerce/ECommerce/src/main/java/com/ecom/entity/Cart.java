@@ -8,9 +8,15 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cart {
 	
 	@Id
@@ -25,37 +31,6 @@ public class Cart {
 	
 	
 	
-	public Cart() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	
-	
-	public Cart(Product product, User user) {
-		super();
-		this.product = product;
-		this.user = user;
-	}
-
-
-	public Long getCartId() {
-		return cartId;
-	}
-	public void setCartId(Long cartId) {
-		this.cartId = cartId;
-	}
-	public Product getProduct() {
-		return product;
-	}
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
 	
 	
 

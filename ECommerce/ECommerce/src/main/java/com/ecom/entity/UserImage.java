@@ -11,12 +11,14 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_images")
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class UserImage {
 
     @Id
@@ -32,27 +34,5 @@ public class UserImage {
     private User user;
     
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public byte[] getImageData() {
-        return imageData;
-    }
-    
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
-    }
-    
-    public User getUser() {
-        return user;
-    }
-    
-    public void setUser(User user) {
-        this.user = user;
-    }
+   
 }

@@ -17,7 +17,9 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.JwtRequest;
 import com.ecom.entity.JwtResponse;
 import com.ecom.entity.User;
+import com.ecom.proxy.UserProxy;
 import com.ecom.util.JwtUtil;
+import com.ecom.util.MapperUtil;
 
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +34,8 @@ public class JwtService implements UserDetailsService {
     @Autowired
     private UserDao userDao;
     
+    @Autowired
+    private MapperUtil mapper;
   
 
     @Autowired
@@ -87,10 +91,10 @@ public class JwtService implements UserDetailsService {
        
     }
     
-    public User getdata(String token) {
+    public UserProxy getdata(String token) {
     	String usrname= jwtUtil.getUsernameFromToken(token);
     	Optional<User> byUserName = userDao.findByUserName(usrname);
     	
-    	return byUserName.get();
+    	return mapper.convertValue(byUserName.get(),UserProxy.class);
     }
 }

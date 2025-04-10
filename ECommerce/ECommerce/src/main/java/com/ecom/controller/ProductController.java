@@ -32,6 +32,9 @@ import com.ecom.entity.Cart;
 import com.ecom.entity.ImageModel;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
+import com.ecom.proxy.CartProxy;
+import com.ecom.proxy.ImageModelProxy;
+import com.ecom.proxy.ProductProxy;
 import com.ecom.service.ProductService;
 
 @RestController
@@ -48,13 +51,13 @@ public class ProductController {
 
 	@PreAuthorize("hasRole('Seller')")
 	@PostMapping(value = { "/addNewProduct" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	public Product addNewProduct(@RequestPart("product") Product product,
+	public ProductProxy addNewProduct(@RequestPart("product") ProductProxy product,
 			@RequestPart("imageFile") MultipartFile[] file) {
 
 		product.setProductId(null);
 
 		try {
-			Set<ImageModel> images = uploadImage(file);
+			Set<ImageModelProxy> images = uploadImage(file);
 			product.setProductImages(images);
 			return productService.addNewProduct(product);
 		} catch (Exception e) {
@@ -63,18 +66,17 @@ public class ProductController {
 		}
 	}
 
-	public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {
-		Set<ImageModel> imageModels = new HashSet<>();
+	public Set<ImageModelProxy> uploadImage(MultipartFile[] multipartFiles) throws IOException {
+		Set<ImageModelProxy> imageModels = new HashSet<>();
 		for (MultipartFile file : multipartFiles) {
-			ImageModel imageModel = new ImageModel(file.getOriginalFilename(), file.getContentType(), file.getBytes());
+			ImageModelProxy imageModel = new ImageModelProxy( file.getOriginalFilename(), file.getContentType(), file.getBytes());
 			imageModels.add(imageModel);
 		}
 		return imageModels;
 	}
 
 	@GetMapping({ "/getAllProducts" })
-	public List<Product> getAllProducts() {
-		System.out.println("controller");
+	public List<ProductProxy> getAllProducts() {
 		return productService.getAllProducts();
 	}
 
@@ -86,13 +88,12 @@ public class ProductController {
 
 	@PreAuthorize("hasRole('Seller')")
 	@PostMapping(value = { "/updateProduct" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-	public Product updateProduct(@RequestPart("product") Product product,
+	public ProductProxy updateProduct(@RequestPart("product") ProductProxy product,
 			@RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
-		System.out.println("product update controller");
 		try {
 			// If new images are provided, upload them
 			if (file != null && file.length > 0) {
-				Set<ImageModel> images = uploadImage(file);
+				Set<ImageModelProxy> images = uploadImage(file);
 				product.setProductImages(images);
 			}
 			return productService.updateProduct(product);
@@ -103,29 +104,29 @@ public class ProductController {
 	}
 
 	@GetMapping({ "/getProductById/{productId}" })
-	public Product getProductById(@PathVariable("productId") Long productId) {
+	public ProductProxy getProductById(@PathVariable("productId") Long productId) {
 		return productService.getProductById(productId);
 	}
 
 	@PreAuthorize("hasRole('User')")
 	@GetMapping({ "/getProductDetails/{isSingleProductCheckout}/{productId}" })
-	public List<Product> getProductDetails(
+	public List<ProductProxy> getProductDetails(
 			@PathVariable(name = "isSingleProductCheckout") boolean isSingleProductCheckout,
 			@PathVariable(name = "productId") Long productId) {
 
-		List<Product> products = new ArrayList<>();
+		List<ProductProxy> products = new ArrayList<>();
 
 		if (isSingleProductCheckout && productId != 0) {
 			// Single product checkout
-			Product product = productService.getProductById(productId);
+			ProductProxy product = productService.getProductById(productId);
 			products.add(product);
 		} else {
 			// Cart checkout - get all products from user's cart
 			// Assuming you have a method to get the current user's cart items
-			List<Cart> carts = productService.getCartDetails();
+			List<CartProxy> carts = productService.getCartDetails();
 
 			if (carts != null) {
-				for (Cart cart : carts) {
+				for (CartProxy cart : carts) {
 					products.add(cart.getProduct());
 				}
 			}
@@ -135,7 +136,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/getAllProductsPageWise")
-	public Page<Product> getAllProducts(@RequestParam(defaultValue = "0") int page,
+	public Page<ProductProxy> getAllProducts(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy,
 			@RequestParam(defaultValue = "asc") String sortDir) {
 		System.err.println("pagewise controller");
@@ -146,7 +147,7 @@ public class ProductController {
 	
 	@PreAuthorize("hasRole('Seller')")
 	@GetMapping("/getAllProductsPageWiseByUser")
-	public Page<Product> getAllProduct(@RequestParam(defaultValue = "0") int page,
+	public Page<ProductProxy> getAllProduct(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy,
 			@RequestParam(defaultValue = "asc") String sortDir) {
 		System.err.println("pagewise controller");

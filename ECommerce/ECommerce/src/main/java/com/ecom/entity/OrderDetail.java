@@ -136,10 +136,17 @@
 package com.ecom.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDetail {
 	
     @Id
@@ -161,12 +168,9 @@ public class OrderDetail {
     private User user;
 
     @Column(name = "order_date")
-//    @Temporal(TemporalType.DATE)
-    private LocalDateTime orderDate; // New field to store the order date
+    private LocalDateTime orderDate; 
 
-    public OrderDetail() {
-        super();
-    }
+  
 
     public OrderDetail(String orderFullName, String orderFullOrder, String orderContactNumber,
                        String orderAlternateContactNumber, String orderStatus, Double orderAmount, 
@@ -182,90 +186,11 @@ public class OrderDetail {
         this.user = user;
     }
 
-    // PrePersist method to set the order date before persisting
+//     PrePersist method to set the order date before persisting
     @PrePersist
     protected void onCreate() {
         this.orderDate = LocalDateTime.now(); // Set the current date
     }
 
-    // Getters and Setters
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderFullName() {
-        return orderFullName;
-    }
-
-    public void setOrderFullName(String orderFullName) {
-        this.orderFullName = orderFullName;
-    }
-
-    public String getOrderFullOrder() {
-        return orderFullOrder;
-    }
-
-    public void setOrderFullOrder(String orderFullOrder) {
-        this.orderFullOrder = orderFullOrder;
-    }
-
-    public String getOrderContactNumber() {
-        return orderContactNumber;
-    }
-
-    public void setOrderContactNumber(String orderContactNumber) {
-        this.orderContactNumber = orderContactNumber;
-    }
-
-    public String getOrderAlternateContactNumber() {
-        return orderAlternateContactNumber;
-    }
-
-    public void setOrderAlternateContactNumber(String orderAlternateContactNumber) {
-        this.orderAlternateContactNumber = orderAlternateContactNumber;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Double getOrderAmount() {
-        return orderAmount;
-    }
-
-    public void setOrderAmount(Double orderAmount) {
-        this.orderAmount = orderAmount;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public User getUser () {
-        return user;
-    }
-
-    public void setUser (User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
+    
 }
