@@ -15,13 +15,18 @@ import com.ecom.configuration.JwtRequestFilter;
 import com.ecom.dao.CartDao;
 //import com.ecom.dao.CartDao;
 import com.ecom.dao.OrderDetailDao;
+import com.ecom.dao.PaymentDao;
 import com.ecom.dao.ProductDao;
 import com.ecom.dao.UserDao;
 import com.ecom.entity.Cart;
 //import com.ecom.entity.Cart;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.OrderInput;
+import com.ecom.entity.OrderPaymentInput;
 import com.ecom.entity.OrderProductQuantity;
+import com.ecom.entity.PaymentDetail;
+//import com.ecom.entity.PaymentDetail;
+import com.ecom.entity.PaymentInput;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
 import com.ecom.proxy.OrderDetailProxy;
@@ -30,95 +35,134 @@ import com.ecom.util.MapperUtil;
 
 @Service
 public class OrderDetailServiceImpl implements OrderDetailService {
-	
-	private static final String ORDER_PLACED = "Placed";  
-	
+
+	private static final String ORDER_PLACED = "Placed";
+
 	@Autowired
 	private OrderDetailDao orderDetailDao;
-	
+
 	@Autowired
 	private ProductDao productDao;
-	
+
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private CartDao cartDao;
 	
 	@Autowired
+	private PaymentDao paymentDao;
+
+	@Autowired
 	private MapperUtil mappper;
-	
-	public List<OrderDetailProxy> getAllOrderDetails(){
+
+	public List<OrderDetailProxy> getAllOrderDetails() {
 		List<OrderDetail> orderDetails = new ArrayList<>();
 		orderDetailDao.findAll().forEach(e -> orderDetails.add(e));
-		
-		return mappper.convertList(orderDetails,OrderDetailProxy.class);
+
+		return mappper.convertList(orderDetails, OrderDetailProxy.class);
 	}
-	
+
 	public List<OrderDetailProxy> getOrderDetails() {
 		String currentUser = JwtRequestFilter.CURRENT_USER;
 		User user = userDao.findById(currentUser).get();
-		return  mappper.convertList(orderDetailDao.findByUser(user),OrderDetailProxy.class);
+		return mappper.convertList(orderDetailDao.findByUser(user), OrderDetailProxy.class);
 	}
-	
-	public void placeOrder(OrderInput orderInput,boolean isSingleProductCheckout) {
+
+	public void placeOrder(OrderInput orderInput, boolean isSingleProductCheckout) {
 		System.out.println("place order service");
-	List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
-	
-	for(OrderProductQuantity o: productQuantityList) {
-		Product product = productDao.findById((long)o.getProductId()).get();
-			
-		String currentUser = JwtRequestFilter.CURRENT_USER;
-		User user= userDao.findById(currentUser).get();
-			
-			OrderDetail orderDetail = new OrderDetail(
-				orderInput.getFullName(),
-				orderInput.getFullAddress(),
-				orderInput.getContactNumber(),
-				orderInput.getAlternateContactNumber(),
-					ORDER_PLACED,
-					product.getProductDiscountedPrice()*o.getQuantity(),
-					product,
-				user);
-		
-		if(!isSingleProductCheckout) {
-				
-				List<Cart> carts= cartDao.findByUser(user);
-			carts.stream().forEach(x -> cartDao.deleteById(x.getCartId()));			
-				
+		List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
+
+		for (OrderProductQuantity o : productQuantityList) {
+			Product product = productDao.findById((long) o.getProductId()).get();
+
+			String currentUser = JwtRequestFilter.CURRENT_USER;
+			User user = userDao.findById(currentUser).get();
+
+			OrderDetail orderDetail = new OrderDetail(orderInput.getFullName(), orderInput.getFullAddress(),
+					orderInput.getContactNumber(), orderInput.getAlternateContactNumber(), ORDER_PLACED,
+					product.getProductDiscountedPrice() * o.getQuantity(), product, user);
+
+			if (!isSingleProductCheckout) {
+
+				List<Cart> carts = cartDao.findByUser(user);
+				carts.stream().forEach(x -> cartDao.deleteById(x.getCartId()));
+
 			}
 			orderDetailDao.save(orderDetail);
 //		}
+		}
+
 	}
-	
+
+	public void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout) {
+		System.out.println("place order with payment service");
+
+		OrderInput orderInput = orderPaymentInput.getOrderDetails();
+		PaymentInput paymentDetails = orderPaymentInput.getPaymentDetails();
+		
+		processOrder(orderInput, isSingleProductCheckout,paymentDetails );
 	}
-	
+
+	// Common method to process orders
+	private void processOrder(OrderInput orderInput, boolean isSingleProductCheckout, PaymentInput paymentInput) {
+		List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
+
+		for (OrderProductQuantity o : productQuantityList) {
+			Product product = productDao.findById((long) o.getProductId()).get();
+
+			String currentUser = JwtRequestFilter.CURRENT_USER;
+			User user = userDao.findById(currentUser).get();
+
+			OrderDetail orderDetail = new OrderDetail(orderInput.getFullName(), orderInput.getFullAddress(),
+					orderInput.getContactNumber(), orderInput.getAlternateContactNumber(), ORDER_PLACED,
+					product.getProductDiscountedPrice() * o.getQuantity(), product, user);
+
+			// Save the order first to get the order ID
+			OrderDetail savedOrder = orderDetailDao.save(orderDetail);
+
+			// If payment details are provided, save payment information
+			if (paymentInput != null) {
+				PaymentDetail paymentDetail = new PaymentDetail(paymentInput.getRazorpayPaymentId(),
+						paymentInput.getRazorpayOrderId(), paymentInput.getRazorpaySignature(),
+						paymentInput.getAmount(), paymentInput.getStatus(), savedOrder);
+
+				paymentDao.save(paymentDetail);
+			}
+
+			// Clear cart if needed
+			if (!isSingleProductCheckout) {
+				List<Cart> carts = cartDao.findByUser(user);
+				carts.forEach(cart -> cartDao.deleteById(cart.getCartId()));
+			}
+		}
+	}
+
 	public Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable) {
-	    User user = userDao.findByUserName(username).get();
-	    Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
-	    System.err.println("Fetching products for user name: " + username);
+		User user = userDao.findByUserName(username).get();
+		Page<OrderDetail> products = orderDetailDao.findByUser(user, pageable);
+		System.err.println("Fetching products for user name: " + username);
 
-	    List<OrderDetail> updatedOrderDetails = products.stream()
-	            .map(orderDetail -> {
-	                if (orderDetail.getProduct() != null) {
-	                    orderDetail.getProduct().setProductImages(null);
-	                }
-	                return orderDetail; 
-	            })
-	            .collect(Collectors.toList());
+		List<OrderDetail> updatedOrderDetails = products.stream().map(orderDetail -> {
+			if (orderDetail.getProduct() != null) {
+				orderDetail.getProduct().setProductImages(null);
+			}
+			return orderDetail;
+		}).collect(Collectors.toList());
 //             return  products;
-	    return new PageImpl<>(mappper.convertList(updatedOrderDetails, OrderDetailProxy.class), pageable, products.getTotalElements());
+		return new PageImpl<>(mappper.convertList(updatedOrderDetails, OrderDetailProxy.class), pageable,
+				products.getTotalElements());
 	}
-	
-	 @Transactional // Add Transactional annotation
-	    public void deleteOrderDetailsByProductId(Long productId) {
-	        orderDetailDao.deleteByProduct_ProductId(productId);
-	    }
 
-	    @Transactional
-	    public void deleteProductAndRelatedOrders(Long productId) {
-	        deleteOrderDetailsByProductId(productId);
-	        productDao.deleteById(productId);
-	    }
+	@Transactional // Add Transactional annotation
+	public void deleteOrderDetailsByProductId(Long productId) {
+		orderDetailDao.deleteByProduct_ProductId(productId);
+	}
+
+	@Transactional
+	public void deleteProductAndRelatedOrders(Long productId) {
+		deleteOrderDetailsByProductId(productId);
+		productDao.deleteById(productId);
+	}
 
 }

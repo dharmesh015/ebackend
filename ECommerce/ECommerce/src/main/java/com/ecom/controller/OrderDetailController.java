@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 //import com.ecom.dao.CartDao;
 import com.ecom.entity.OrderDetail;
 import com.ecom.entity.OrderInput;
+import com.ecom.entity.OrderPaymentInput;
 import com.ecom.entity.Product;
 import com.ecom.proxy.OrderDetailProxy;
 import com.ecom.service.OrderDetailService;
@@ -38,6 +40,16 @@ public class OrderDetailController {
 		orderDetailService.placeOrder(orderInput,issingleProducrCheckout);
 		
 	}
+	
+	 @PreAuthorize("hasRole('User')")
+	    @PostMapping("/placeOrderWithPayment/{isSingleProductCheckout}")
+	    public ResponseEntity<String> placeOrderWithPayment(
+	            @PathVariable boolean isSingleProductCheckout,
+	            @RequestBody OrderPaymentInput orderPaymentInput) {
+	        System.err.println("placed");
+		 orderDetailService.placeOrderWithPayment(orderPaymentInput, isSingleProductCheckout);
+	        return ResponseEntity.ok("Order placed successfully with payment");
+	    }
 	
 	@PreAuthorize("hasRole('User')")
 	@GetMapping({"/getOrderDetails"})

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ecom.entity.OrderInput;
+import com.ecom.entity.OrderPaymentInput;
 import com.ecom.proxy.OrderDetailProxy;
 
 public interface OrderDetailService {
@@ -15,4 +16,5 @@ public interface OrderDetailService {
 	    Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable);
 	    void deleteOrderDetailsByProductId(Long productId);
 	    void deleteProductAndRelatedOrders(Long productId);
+		void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
 }
