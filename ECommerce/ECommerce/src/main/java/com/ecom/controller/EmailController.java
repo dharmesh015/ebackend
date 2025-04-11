@@ -50,6 +50,19 @@ public class EmailController {
         }
     }
 	
+	@PostMapping("/send-email-for-role/{username}")
+    public ResponseEntity<String> sendEmailForRol(@PathVariable("username")String username,@RequestBody EmailRequest request) {
+		System.out.println("send email--"+request.getEmail());
+        String result = emailService.sendEmailForRole(username,request.getEmail());
+       
+        if (result.equals("UNF")) {
+            return ResponseEntity.ok("UNF");
+        } else if (result.equals("S")) {
+            return ResponseEntity.ok("S");
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
 	@GetMapping("/reset-password/{token}/{newPassword}")
     public ResponseEntity<String> resetPassword(@PathVariable ("token") String token,@PathVariable ("newPassword") String newPassword) {
         // First validate the token

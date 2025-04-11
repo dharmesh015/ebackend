@@ -4,4 +4,6 @@ import com.ecom.proxy.UserProxy;
 
 public interface UserService {
 	UserProxy registerNewUser (UserProxy user);
+
+	void updateUserRole(String userName, String role);
 }

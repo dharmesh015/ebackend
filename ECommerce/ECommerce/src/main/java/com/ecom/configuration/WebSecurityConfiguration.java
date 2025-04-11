@@ -21,15 +21,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration {
 
-	 @Autowired
-	    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	@Autowired
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-	    @Autowired
-	    
-	    private JwtRequestFilter jwtRequestFilter;
+	@Autowired
 
-	    @Autowired
-	    private UserDetailsService jwtService;
+	private JwtRequestFilter jwtRequestFilter;
+
+	@Autowired
+	private UserDetailsService jwtService;
 
 //    public WebSecurityConfiguration(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, 
 //                                    JwtRequestFilter jwtRequestFilter, 
@@ -39,33 +39,34 @@ public class WebSecurityConfiguration {
 //        this.jwtService = jwtService;
 //    }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors();  //  CORS (enable if required)
-        http.csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/authenticate","/createNewRole","/HttpMethod.OPTIONS","/deleteProduct/**", "/registerNewUser","/getAllProducts","/getProductById/**","/getProductDetails/**","/getdata/**","/getAllProductsPageWise","/getorderdetails/**","/upload-image","/send-email","/reset-password/**","/validate-token/**","/updateUser")
-                .permitAll()
-                .requestMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated()
-            )
-            .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.cors(); // CORS (enable if required)
+		http.csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/authenticate", "/createNewRole", "/HttpMethod.OPTIONS", "/deleteProduct/**",
+								"/registerNewUser", "/getAllProducts", "/getProductById/**", "/getProductDetails/**",
+								"/getdata/**", "/getAllProductsPageWise", "/getorderdetails/**", "/upload-image",
+								"/send-email", "/reset-password/**", "/validate-token/**", "/updateUser",
+								"/send-email-for-role/**")
+						.permitAll().requestMatchers(HttpHeaders.ALLOW).permitAll().anyRequest().authenticated())
+				.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(authProvider);
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return new ProviderManager(authProvider);
+	}
 }

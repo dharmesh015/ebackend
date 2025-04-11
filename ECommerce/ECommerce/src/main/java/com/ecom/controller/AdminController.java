@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 //import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
 import com.ecom.proxy.ProductProxy;
+import com.ecom.proxy.RoleProxy;
 import com.ecom.proxy.UserProxy;
 import com.ecom.service.AdminService;
+import com.ecom.service.UserService;
 import com.ecom.service.impl.AdminServiceImpl;
 import com.ecom.util.MapperUtil;
 
@@ -33,6 +36,10 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminservice;
+	
+	@Autowired
+	private UserService userService;
+	
 
 	@Autowired
 	private MapperUtil mapper;
@@ -65,4 +72,12 @@ public class AdminController {
 
 		return adminservice.getuser(name);
 	}
+	
+	@PreAuthorize("hasRole('Admin')")
+	@GetMapping("/updateUserRole/{userName}/{role}")
+    public ResponseEntity<String> updateUserRole(@PathVariable("userName") String userName, @PathVariable("role") String role) {
+        System.out.println("updateUserRole");
+		userService.updateUserRole(userName, role);
+        return ResponseEntity.ok("User  role updated successfully");
+    }
 }

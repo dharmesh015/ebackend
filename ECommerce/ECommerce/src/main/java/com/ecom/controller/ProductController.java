@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.ecom.dao.ProductImageDao;
 import com.ecom.entity.Cart;
 import com.ecom.entity.ImageModel;
 import com.ecom.entity.OrderDetail;
@@ -36,6 +38,7 @@ import com.ecom.proxy.CartProxy;
 import com.ecom.proxy.ImageModelProxy;
 import com.ecom.proxy.ProductProxy;
 import com.ecom.service.ProductService;
+import com.ecom.util.MapperUtil;
 
 @RestController
 @CrossOrigin(value = "http://localhost:4200")
@@ -43,6 +46,12 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ProductImageDao productImageDao;
+	
+	@Autowired
+	private MapperUtil mapper;
 
 	@RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
 	public ResponseEntity<Void> handleOptions() {
@@ -52,27 +61,42 @@ public class ProductController {
 	@PreAuthorize("hasRole('Seller')")
 	@PostMapping(value = { "/addNewProduct" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ProductProxy addNewProduct(@RequestPart("product") ProductProxy product,
-			@RequestPart("imageFile") MultipartFile[] file) {
+	                                   @RequestPart("imageFile") MultipartFile[] file) {
+	    System.out.println("here called");
+	    product.setProductId(null);
 
-		product.setProductId(null);
-
-		try {
-			Set<ImageModelProxy> images = uploadImage(file);
-			product.setProductImages(images);
-			return productService.addNewProduct(product);
-		} catch (Exception e) {
-			System.out.println("Error occurred: " + e.getMessage());
-			return null;
-		}
+	    try {
+	        // Save images first
+	        Set<ImageModel> images = uploadImage(file);
+	        
+	        // Set the saved images to the product
+	        product.setProductImages(images.stream()
+	            .map(image -> new ImageModelProxy(image.getId(), image.getName(), image.getType(), image.getPicByte()))
+	            .collect(Collectors.toSet()));
+	        
+	        // Now save the product
+	        return productService.addNewProduct(product);
+	    } catch (Exception e) {
+	        System.out.println("Error occurred: " + e.getMessage());
+	        return null;
+	    }
 	}
-
-	public Set<ImageModelProxy> uploadImage(MultipartFile[] multipartFiles) throws IOException {
-		Set<ImageModelProxy> imageModels = new HashSet<>();
-		for (MultipartFile file : multipartFiles) {
-			ImageModelProxy imageModel = new ImageModelProxy( file.getOriginalFilename(), file.getContentType(), file.getBytes());
-			imageModels.add(imageModel);
-		}
-		return imageModels;
+	public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {
+	    Set<ImageModel> imageModels = new HashSet<>();
+	    for (MultipartFile file : multipartFiles) {
+	        // Create a new ImageModel instance
+	        ImageModel imageModel = new ImageModel();
+	        imageModel.setName(file.getOriginalFilename());
+	        imageModel.setType(file.getContentType());
+	        imageModel.setPicByte(file.getBytes());
+	        
+	        // Save the image to the database
+	        imageModel = productImageDao.save(imageModel); // Assuming you have an ImageRepository
+	        
+	        // Add the saved image to the set
+	        imageModels.add(imageModel);
+	    }
+	    return imageModels;
 	}
 
 	@GetMapping({ "/getAllProducts" })
@@ -91,11 +115,11 @@ public class ProductController {
 	public ProductProxy updateProduct(@RequestPart("product") ProductProxy product,
 			@RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
 		try {
-			// If new images are provided, upload them
-			if (file != null && file.length > 0) {
-				Set<ImageModelProxy> images = uploadImage(file);
-				product.setProductImages(images);
-			}
+//			// If new images are provided, upload them
+//			if (file != null && file.length > 0) {
+//				Set<ImageModel> images = uploadImage(file);
+//				product.setProductImages(images);
+//			}
 			return productService.updateProduct(product);
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e.getMessage());

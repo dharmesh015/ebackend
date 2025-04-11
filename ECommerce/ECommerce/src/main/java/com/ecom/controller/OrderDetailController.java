@@ -1,7 +1,7 @@
  package com.ecom.controller;
 
 import java.util.List;
-
+import com.ecom.service.impl.TokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +26,16 @@ import com.ecom.service.OrderDetailService;
 
 @RestController
 public class OrderDetailController {
+
+    private final TokenServiceImpl tokenServiceImpl;
 	
 	@Autowired
 	private OrderDetailService orderDetailService;
+
+
+    OrderDetailController(TokenServiceImpl tokenServiceImpl) {
+        this.tokenServiceImpl = tokenServiceImpl;
+    }
 	
 	
 	
@@ -76,6 +83,13 @@ public class OrderDetailController {
         Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, "orderDate");
         PageRequest pageable = PageRequest.of(page, size, sort);
         return orderDetailService.getAllorderPageWise(username,pageable);
+    }
+	
+	 @PreAuthorize("hasRole('Seller')")
+	@GetMapping("/seller/{sellerName}")
+    public List<OrderDetail> getOrdersBySeller(@PathVariable String sellerName) {
+		 System.out.println("getOrdersBySeller");
+        return orderDetailService.getOrdersBySeller(sellerName);
     }
 
 }

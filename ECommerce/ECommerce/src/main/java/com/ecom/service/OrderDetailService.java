@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.ecom.entity.OrderDetail;
 import com.ecom.entity.OrderInput;
 import com.ecom.entity.OrderPaymentInput;
 import com.ecom.proxy.OrderDetailProxy;
@@ -17,4 +18,5 @@ public interface OrderDetailService {
 	    void deleteOrderDetailsByProductId(Long productId);
 	    void deleteProductAndRelatedOrders(Long productId);
 		void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
+		List<OrderDetail> getOrdersBySeller(String sellerName);
 }

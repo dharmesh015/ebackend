@@ -10,12 +10,14 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.Role;
 import com.ecom.entity.User;
 import com.ecom.proxy.UserProxy;
+import com.ecom.service.EmailService;
 import com.ecom.service.UserService;
 import com.ecom.util.MapperUtil;
 
 import jakarta.annotation.PostConstruct;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private MapperUtil mapper;
+	
+	@Autowired
+	private EmailService emailservice;
 
 	@PostConstruct
 	public void initRoleAndUser() {
@@ -94,5 +99,18 @@ public class UserServiceImpl implements UserService{
 
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
+	}
+
+	@Override
+	public void updateUserRole(String userName, String roleobj) {
+		User byUserName = userDao.findByUserName(userName).get();
+		Role role = roleDao.findById(roleobj).orElseThrow(() -> new RuntimeException("Role not found"));
+		Set<Role> userRoles = new HashSet<>();
+		userRoles.add(role);
+		byUserName.setRole(userRoles);
+		
+		userDao.save(byUserName);
+		
+		emailservice.sendEmailToUser(userName, roleobj);
 	}
 }

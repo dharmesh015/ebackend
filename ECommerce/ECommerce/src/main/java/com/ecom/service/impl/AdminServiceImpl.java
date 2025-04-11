@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.dao.CartDao;
+import com.ecom.dao.OrderDetailDao;
 import com.ecom.dao.RoleDao;
 import com.ecom.dao.UserDao;
 import com.ecom.dao.UserImageDao;
@@ -38,6 +39,9 @@ public class AdminServiceImpl implements AdminService{
 	
 	@Autowired
 	private CartDao cartdao;
+	
+	@Autowired
+	private OrderDetailDao orddrdao;;
 
 
     AdminServiceImpl(MapperUtil mapperUtil) {
@@ -61,6 +65,7 @@ public class AdminServiceImpl implements AdminService{
 	@Transactional
     public void deleteUser (String userName) {
         User user = userDao.findById(userName).orElseThrow(() -> new RuntimeException("User  not found"));
+        orddrdao.deleteByUser(user);
         cartdao.deleteByUser(user);
         imageDao.deleteByUser(user);
         user.getRole().clear();
