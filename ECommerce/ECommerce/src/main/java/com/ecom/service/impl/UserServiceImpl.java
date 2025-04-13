@@ -82,7 +82,15 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-	public UserProxy registerNewUser(UserProxy usero) {
+	public String registerNewUser(UserProxy usero) {
+		
+		
+		if(userDao.findByEmail(usero.getEmail()) != null) {
+			System.err.println("EmailExist");
+			return "EmailExist";
+		}
+//		userDao.existsByEmail()
+	
 		User user = mapper.convertValue(usero, User.class);
 		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
 
@@ -94,7 +102,8 @@ public class UserServiceImpl implements UserService{
 		savedUser.setRole(userRoles);
 
 		User userobj = userDao.save(savedUser);
-		return mapper.convertValue(userobj, UserProxy.class);
+//		 mapper.convertValue(userobj, UserProxy.class);
+		return "register";
 	}
 
 	public String getEncodedPassword(String password) {

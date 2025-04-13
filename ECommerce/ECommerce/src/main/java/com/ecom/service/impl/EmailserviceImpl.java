@@ -1,6 +1,9 @@
 package com.ecom.service.impl;
 
 import java.util.Optional;
+import org.springframework.mail.javamail.MimeMessageHelper;
+//import javax.mail.MessagingException;
+//import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,9 @@ import com.ecom.dao.UserDao;
 import com.ecom.entity.User;
 import com.ecom.service.EmailService;
 import com.ecom.service.TokenService;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailserviceImpl implements EmailService {
@@ -93,63 +99,75 @@ public class EmailserviceImpl implements EmailService {
 
 	@Override
 	public String sendEmailForRole(String username, String toEmail) {
-		System.err.println("sendPasswordForRole service");
-		User user = userdao.findByUserName(username).get();
-		if (user == null) {
-			return "UNF"; // Ensure this matches the frontend check
+	    System.err.println("sendPasswordForRole service");
+	    User user = userdao.findByUserName(username).orElse(null);
+	    if (user == null) {
+	        return "UNF"; // Ensure this matches the frontend check
+	    }
+
+	    // Create a MimeMessage
+	    MimeMessage message = mailSender.createMimeMessage();
+	    MimeMessageHelper helper = null;
+		try {
+			helper = new MimeMessageHelper(message, true);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(sender);
-		message.setTo(toEmail);
-		message.setSubject("Request to Register as Seller");
-		message.setText("Dear Admin,\n\n" + "I hope this message finds you well.\n\n" + "My name is "
-				+ user.getUserName()
-				+ ", and I am writing to request registration for a seller account on your website. "
-				+ "I am eager to start selling and contributing to your platform.\n\n"
-				+ "Please let me know if you require any further information or documentation to process my request.\n\n"
-				+ "Thank you for your attention to this matter.\n\n" + "Best regards,\n" + user.getUserName() + "\n"
-				+ toEmail);
+	    try {
+	        helper.setFrom(sender);
+	        helper.setTo(toEmail);
+	        helper.setSubject("Request to Register as Seller");
 
-		System.out.println("Dear Admin,\n\n" + "I hope this message finds you well.\n\n" + "My name is "
-				+ user.getUserName()
-				+ ", and I am writing to request registration for a seller account on your website. "
-				+ "I am eager to start selling and contributing to your platform.\n\n"
-				+ "Please let me know if you require any further information or documentation to process my request.\n\n"
-				+ "Thank you for your attention to this matter.\n\n" + "Best regards,\n" + user.getUserName() + "\n"
-				+ toEmail);
-		mailSender.send(message);
-		return "S"; // Ensure this matches the frontend check
+	        // Create HTML content
+	        String htmlContent = "<html>" +
+	                "<body>" +
+	                "<h2>Dear Admin,</h2>" +
+	                "<p>I hope this message finds you well.</p>" +
+	                "<p>My name is <strong>" + user.getUserName() + "</strong>, and I am writing to request registration for a seller account on your website.</p>" +
+	                "<p>I am eager to start selling and contributing to your platform.</p>" +
+	                "<p>Please let me know if you require any further information or documentation to process my request.</p>" +
+	                "<p>Thank you for your attention to this matter.</p>" +
+	                "<p>Best regards,<br>" + user.getUserName() + "<br>" + toEmail + "</p>" +
+	                "</body>" +
+	                "</html>";
 
+	        // Set the HTML content
+	        helper.setText(htmlContent, true); // true indicates that the text is HTML
+
+	        // Send the email
+	        mailSender.send(message);
+	        return "S"; // Ensure this matches the frontend check
+	    } catch (MessagingException e) {
+	        e.printStackTrace();
+	        return "ERROR"; // Handle the error appropriately
+	    }
 	}
-
 	@Override
 	public String sendEmailToUser(String username, String role) {
 		User user = userdao.findByUserName(username).get();
 		if (user == null) {
 			return "UNF"; // Ensure this matches the frontend check
 		}
+		System.out.println(user.getEmail());
 
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(sender);
 		message.setTo(user.getEmail());
-		 message.setSubject("Registration as Seller Approved");
-	        message.setText("Dear " + username + ",\n\n"
-	                + "We are pleased to inform you that your request to register as a seller has been approved by the admin.\n\n"
-	                + "Your current role is: " + role + ".\n\n"
-	                + "You can now start selling on our platform. If you have any questions or need further assistance, please feel free to reach out.\n\n"
-	                + "Thank you for being a part of our community.\n\n"
-	                + "Best regards,\n"
-	                + "The Admin Team");
+		message.setSubject("Registration as Seller Approved");
+		message.setText("Dear " + username + user.getEmail() + ",\n\n"
+				+ "We are pleased to inform you that your request to register as a seller has been approved by the admin.\n\n"
+				+ "Your current role is: " + role + ".\n\n"
+				+ "You can now start selling on our platform. If you have any questions or need further assistance, please feel free to reach out.\n\n"
+				+ "Thank you for being a part of our community.\n\n" + "Best regards,\n" + "The Admin Team");
 
 		System.out.println("Dear " + username + ",\n\n"
-                + "We are pleased to inform you that your request to register as a seller has been approved by the admin.\n\n"
-                + "Your current role is: " + role + ".\n\n"
-                + "You can now start selling on our platform. If you have any questions or need further assistance, please feel free to reach out.\n\n"
-                + "Thank you for being a part of our community.\n\n"
-                + "Best regards,\n"
-                + "The Admin Team");
-//		mailSender.send(message);
+				+ "We are pleased to inform you that your request to register as a seller has been approved by the admin.\n\n"
+				+ "Your current role is: " + role + ".\n\n"
+				+ "You can now start selling on our platform. If you have any questions or need further assistance, please feel free to reach out.\n\n"
+				+ "Thank you for being a part of our community.\n\n" + "Best regards,\n" + "The Admin Team");
+		mailSender.send(message);
 		return "S"; //
 	}
 

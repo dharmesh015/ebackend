@@ -165,10 +165,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 		productDao.deleteById(productId);
 	}
 
-	public List<OrderDetail> getOrdersBySeller(String sellerName) {
+	public List<OrderDetailProxy> getOrdersBySeller(String sellerName) {
 		System.out.println("getOrdersBySeller service");
 		System.out.println(orderDetailDao.findByProduct_Sellername(sellerName));
-        return orderDetailDao.findByProduct_Sellername(sellerName);
+		return mappper.convertList(orderDetailDao.findByProduct_Sellername(sellerName), OrderDetailProxy.class);
+         
     }
 
 }

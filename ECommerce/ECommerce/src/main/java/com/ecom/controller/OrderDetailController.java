@@ -87,7 +87,7 @@ public class OrderDetailController {
 	
 	 @PreAuthorize("hasRole('Seller')")
 	@GetMapping("/seller/{sellerName}")
-    public List<OrderDetail> getOrdersBySeller(@PathVariable String sellerName) {
+    public List<OrderDetailProxy> getOrdersBySeller(@PathVariable String sellerName) {
 		 System.out.println("getOrdersBySeller");
         return orderDetailService.getOrdersBySeller(sellerName);
     }

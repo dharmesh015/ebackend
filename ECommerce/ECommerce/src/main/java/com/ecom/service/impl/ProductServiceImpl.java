@@ -89,15 +89,17 @@ public class ProductServiceImpl implements ProductService {
 		return mapperUtil.convertValue(product.get(), ProductProxy.class);
 	}
 
-	public List<Product> getProductDetails(boolean isSingeProductCheckout, Integer productId) {
+	public List<ProductProxy>getProductDetails(boolean isSingeProductCheckout, Integer productId) {
 
 		if (isSingeProductCheckout && productId != 0) {
 			List<Product> list = new ArrayList<>();
 			Long id = (long) productId;
 			Product product = productDao.findById(id).get();
 			list.add(product);
+			
 			System.out.println(list.getFirst().getProductDescription());
-			return list;
+			 List<ProductProxy> convertList = mapperUtil.convertList(list, ProductProxy.class);
+			 return convertList;
 		} else {
 
 //			String username = JwtRequestFilter.CURRENT_USER;
@@ -134,12 +136,13 @@ public class ProductServiceImpl implements ProductService {
 //		return ;
 	}
 
-	public Page<Product> getproductbyusername(String username, Pageable pageable) {
+	public Page<ProductProxy>getproductbyusername(String username, Pageable pageable) {
 		User user = userdao.findByUserName(username).get();
 		Page<Product> products = productDao.findBySellername(username, pageable);
 		System.err.println("Fetching products for user name: " + username);
-
-		return products;
+		List<Product> updatedOrderDetails = products.stream()
+	            .collect(Collectors.toList());
+		  return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable, products.getTotalElements());
 
 	}
 

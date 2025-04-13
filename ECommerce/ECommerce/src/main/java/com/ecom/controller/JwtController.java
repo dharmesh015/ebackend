@@ -59,7 +59,7 @@ public class JwtController {
 	}
 
 	@PostMapping("/registerNewUser")
-	public UserProxy registerNewUser(@RequestBody UserProxy user) {
+	public String registerNewUser(@RequestBody UserProxy user) {
 		System.out.println("controler");
 		return Service.registerNewUser(user);
 	}

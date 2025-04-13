@@ -11,7 +11,7 @@ import com.ecom.proxy.UserProxy;
 
 
 public interface AdminService {
-	List<User> getAllUser ();
+
     Page<UserProxy> getAllUsersPageWise(PageRequest pageable);
     void deleteUser (String userName);
     String updateUser (UserProxy user);

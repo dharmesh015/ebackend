@@ -18,5 +18,5 @@ public interface OrderDetailService {
 	    void deleteOrderDetailsByProductId(Long productId);
 	    void deleteProductAndRelatedOrders(Long productId);
 		void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
-		List<OrderDetail> getOrdersBySeller(String sellerName);
+		List<OrderDetailProxy> getOrdersBySeller(String sellerName);
 }

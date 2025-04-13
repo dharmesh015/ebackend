@@ -11,10 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.dao.CartDao;
 import com.ecom.dao.OrderDetailDao;
+import com.ecom.dao.PaymentDao;
+import com.ecom.dao.ProductDao;
 import com.ecom.dao.RoleDao;
 import com.ecom.dao.UserDao;
 import com.ecom.dao.UserImageDao;
+import com.ecom.entity.OrderDetail;
 import com.ecom.entity.Product;
+import com.ecom.entity.Role;
 import com.ecom.entity.User;
 import com.ecom.proxy.UserProxy;
 import com.ecom.service.AdminService;
@@ -41,7 +45,13 @@ public class AdminServiceImpl implements AdminService{
 	private CartDao cartdao;
 	
 	@Autowired
-	private OrderDetailDao orddrdao;;
+	private OrderDetailDao orddrdao;
+	
+	@Autowired
+	private PaymentDao paymentDao;
+	
+	@Autowired
+  private ProductDao productDao;
 
 
     AdminServiceImpl(MapperUtil mapperUtil) {
@@ -49,9 +59,7 @@ public class AdminServiceImpl implements AdminService{
     }
 	
 	
-	public List<User> getAllUser(){
-		return (List<User>) userDao.findAll();
-	}
+
 
 
 	public Page<UserProxy> getAllUsersPageWise(PageRequest pageable) {
@@ -61,16 +69,51 @@ public class AdminServiceImpl implements AdminService{
      
 	}
 
-
+//	@Transactional
+//	public void deleteUser(String userName) {
+//	    User user = userDao.findById(userName).orElseThrow(() -> new RuntimeException("User  not found"));
+//
+//	    // Delete payment details associated with the user's orders
+//	    List<OrderDetail> orders = orddrdao.findByUser(user);
+//	    for (OrderDetail order : orders) {
+//	        paymentDao.deleteByOrder(order); // Assuming you have a method to delete payment details by order
+//	        orddrdao.delete(order); // Delete the order
+//	    }
+//
+//        cartdao.deleteByUser(user);
+//        imageDao.deleteByUser(user);
+//        user.getRole().clear();
+//        userDao.delete(user);
+//	}
 	@Transactional
-    public void deleteUser (String userName) {
-        User user = userDao.findById(userName).orElseThrow(() -> new RuntimeException("User  not found"));
-        orddrdao.deleteByUser(user);
-        cartdao.deleteByUser(user);
-        imageDao.deleteByUser(user);
-        user.getRole().clear();
-        userDao.delete(user);
-    }
+	public void deleteUser (String userName) {
+	    User user = userDao.findById(userName).orElseThrow(() -> new RuntimeException("User  not found"));
+
+	    // Delete payment details associated with the user's orders
+	    List<OrderDetail> orders = orddrdao.findByUser (user);
+	    for (OrderDetail order : orders) {
+	        paymentDao.deleteByOrder(order); // Assuming you have a method to delete payment details by order
+	        orddrdao.delete(order); // Delete the order
+	    }
+
+	    // Check if the user has the "Seller" role
+	    Optional<Role> sellerRole = roleDao.findByRoleName("Seller");
+	    System.err.println(user.getRole().contains(sellerRole.get()));
+	    if (sellerRole.isPresent() && user.getRole().contains(sellerRole.get())) {
+	        List<Product> products = productDao.findBySellername(user.getUserName());
+	        for (Product product : products) {
+	            productDao.deleteById(product.getProductId()); // Delete the product by ID
+	        }
+	    }
+
+	    // Delete user's cart and images
+	    cartdao.deleteByUser (user);
+	    imageDao.deleteByUser (user);
+	    
+	    // Clear user roles and delete the user
+	    user.getRole().clear();
+	    userDao.delete(user);
+	}
 	
 	
 	public String updateUser(UserProxy user) {
