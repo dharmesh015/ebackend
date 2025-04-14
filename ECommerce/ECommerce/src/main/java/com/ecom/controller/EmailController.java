@@ -2,6 +2,7 @@ package com.ecom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +51,7 @@ public class EmailController {
         }
     }
 	
+	@PreAuthorize("hasRole('Admin')")
 	@PostMapping("/send-email-for-role/{username}")
     public ResponseEntity<String> sendEmailForRol(@PathVariable("username")String username,@RequestBody EmailRequest request) {
 		System.out.println("send email--"+request.getEmail());
@@ -63,16 +65,17 @@ public class EmailController {
             return ResponseEntity.badRequest().body(result);
         }
     }
+	
 	@GetMapping("/reset-password/{token}/{newPassword}")
     public ResponseEntity<String> resetPassword(@PathVariable ("token") String token,@PathVariable ("newPassword") String newPassword) {
-        // First validate the token
+       
         String email = tokenService.validateToken(token);
         
         if (email == null) {
             return ResponseEntity.badRequest().body("Invalid or expired token");
         }
         
-        // If token is valid, reset the password
+        
         boolean result = emailService.resetPassword(email, newPassword);
         
         if (result) {

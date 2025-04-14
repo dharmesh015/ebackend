@@ -90,7 +90,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 			}
 			orderDetailDao.save(orderDetail);
-//		}
+
 		}
 
 	}
@@ -104,7 +104,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 		processOrder(orderInput, isSingleProductCheckout,paymentDetails );
 	}
 
-	// Common method to process orders
+
 	private void processOrder(OrderInput orderInput, boolean isSingleProductCheckout, PaymentInput paymentInput) {
 		List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
 
@@ -118,10 +118,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 					orderInput.getContactNumber(), orderInput.getAlternateContactNumber(), ORDER_PLACED,
 					product.getProductDiscountedPrice() * o.getQuantity(), product, user);
 
-			// Save the order first to get the order ID
+			
 			OrderDetail savedOrder = orderDetailDao.save(orderDetail);
 
-			// If payment details are provided, save payment information
+			
 			if (paymentInput != null) {
 				PaymentDetail paymentDetail = new PaymentDetail(paymentInput.getRazorpayPaymentId(),
 						paymentInput.getRazorpayOrderId(), paymentInput.getRazorpaySignature(),
@@ -130,7 +130,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 				paymentDao.save(paymentDetail);
 			}
 
-			// Clear cart if needed
+		
 			if (!isSingleProductCheckout) {
 				List<Cart> carts = cartDao.findByUser(user);
 				carts.forEach(cart -> cartDao.deleteById(cart.getCartId()));
@@ -154,7 +154,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 				products.getTotalElements());
 	}
 
-	@Transactional // Add Transactional annotation
+	@Transactional 
 	public void deleteOrderDetailsByProductId(Long productId) {
 		orderDetailDao.deleteByProduct_ProductId(productId);
 	}

@@ -32,7 +32,7 @@ import com.ecom.service.ProductService;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-//	private final MapperUtil mapperUtil;
+
 
 	@Autowired
 	private ProductDao productDao;
@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private OrderDetailDao orderdetaildao;
-	
+
 	@Autowired
 	private OrderDetailService orderDetailService;
 
@@ -58,17 +58,29 @@ public class ProductServiceImpl implements ProductService {
 		return mapperUtil.convertValue(productDao.save(convertproduct), ProductProxy.class);
 	}
 
+
+	
 	public List<ProductProxy> getAllProducts() {
+	   
+	    List<Product> products = productDao.findByDeletedFalse();
 
-		return  mapperUtil.convertList((List<Product>) productDao.findAll(), ProductProxy.class);
 
+	    return mapperUtil.convertList(products, ProductProxy.class);
 	}
 
 	@Transactional
-	public void deleteProductById(Long productId) {
-
-		orderDetailService.deleteOrderDetailsByProductId(productId); // Delete related orders first
-		productDao.deleteById(productId);
+	public String deleteProductById(Long productId) {
+		Product product = productDao.findById(productId)
+				.orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+		
+		
+		cartdao.deleteByProduct_ProductId(productId);
+		
+		product.setDeleted(true);
+		
+		productDao.save(product);
+		
+		return "deleted";
 	}
 
 	public ProductProxy updateProduct(ProductProxy productproxy) {
@@ -89,17 +101,17 @@ public class ProductServiceImpl implements ProductService {
 		return mapperUtil.convertValue(product.get(), ProductProxy.class);
 	}
 
-	public List<ProductProxy>getProductDetails(boolean isSingeProductCheckout, Integer productId) {
+	public List<ProductProxy> getProductDetails(boolean isSingeProductCheckout, Integer productId) {
 
 		if (isSingeProductCheckout && productId != 0) {
 			List<Product> list = new ArrayList<>();
 			Long id = (long) productId;
 			Product product = productDao.findById(id).get();
 			list.add(product);
-			
+
 			System.out.println(list.getFirst().getProductDescription());
-			 List<ProductProxy> convertList = mapperUtil.convertList(list, ProductProxy.class);
-			 return convertList;
+			List<ProductProxy> convertList = mapperUtil.convertList(list, ProductProxy.class);
+			return convertList;
 		} else {
 
 //			String username = JwtRequestFilter.CURRENT_USER;
@@ -114,35 +126,36 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
-	public Page<ProductProxy> getAllProductsPageWise(Pageable pageable) {
-		System.err.println("pagewise service");
-		System.err.println(productDao.findAll(pageable));
-		
-		return productDao.findAll(pageable);
- 
 
+	public Page<ProductProxy> getAllProductsPageWise(Pageable pageable) {
+	    System.err.println("pagewise service");
+
+	    Page<Product> products = productDao.findByDeletedFalse(pageable);
+
+	    List<Product> updatedOrderDetails = products.stream().collect(Collectors.toList());
+	    return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable, products.getTotalElements());
 	}
 
 	public Page<ProductProxy> getAllProductsPageWiseByUser(Pageable pageable) {
 		System.err.println("pagewise service");
 		System.err.println(productDao.findAll(pageable));
-		
-		Page<Product> products = productDao.findBySellername(getCurrentUsername(), pageable);
-		
-		  List<Product> updatedOrderDetails = products.stream()
-		            .collect(Collectors.toList());
-	              
-		    return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable, products.getTotalElements());
-//		return ;
+
+		Page<Product> products = productDao.findBySellernameAndDeletedFalse(getCurrentUsername(), pageable);
+
+		List<Product> updatedOrderDetails = products.stream().collect(Collectors.toList());
+
+		return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable,
+				products.getTotalElements());
+
 	}
 
-	public Page<ProductProxy>getproductbyusername(String username, Pageable pageable) {
+	public Page<ProductProxy> getproductbyusername(String username, Pageable pageable) {
 		User user = userdao.findByUserName(username).get();
 		Page<Product> products = productDao.findBySellername(username, pageable);
 		System.err.println("Fetching products for user name: " + username);
-		List<Product> updatedOrderDetails = products.stream()
-	            .collect(Collectors.toList());
-		  return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable, products.getTotalElements());
+		List<Product> updatedOrderDetails = products.stream().collect(Collectors.toList());
+		return new PageImpl<>(mapperUtil.convertList(updatedOrderDetails, ProductProxy.class), pageable,
+				products.getTotalElements());
 
 	}
 
@@ -150,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
 		String username = getCurrentUsername();
 		User user = userdao.findById(username).orElse(null);
 		if (user != null) {
-			
+
 			return mapperUtil.convertList(cartdao.findByUser(user), CartProxy.class);
 		}
 		return null;

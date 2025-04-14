@@ -52,7 +52,7 @@ public class EmailserviceImpl implements EmailService {
 
 		User user = userdao.findByEmail(toEmail);
 		if (user == null) {
-			return "UNF"; // Ensure this matches the frontend check
+			return "UNF";
 		}
 
 		String resetToken = tokenService.generatePasswordResetToken(user.getEmail(), user.getUserPassword());
@@ -68,8 +68,14 @@ public class EmailserviceImpl implements EmailService {
 				+ "If you did not request a password reset, please ignore this email.\n\n"
 				+ "Thank you,\nYour Application Team");
 
+		System.out.println("Hello " + user.getUserName() + ",\n\n"
+				+ "You requested to reset your password. Please click the link below to reset your password:\n\n"
+				+ resetLink + "\n\n" + "This link will expire in 10 minutes.\n\n"
+				+ "If you did not request a password reset, please ignore this email.\n\n"
+				+ "Thank you,\nYour Application Team");
+
 		mailSender.send(message);
-		return "S"; // Ensure this matches the frontend check
+		return "S";
 
 	}
 
@@ -81,8 +87,6 @@ public class EmailserviceImpl implements EmailService {
 				return false;
 			}
 
-			// Update user's password
-			// Note: In production, you should encrypt the password
 			user.setUserPassword(getEncodedPassword(newPassword));
 			userdao.save(user);
 			System.err.println("user  found");
@@ -99,51 +103,46 @@ public class EmailserviceImpl implements EmailService {
 
 	@Override
 	public String sendEmailForRole(String username, String toEmail) {
-	    System.err.println("sendPasswordForRole service");
-	    User user = userdao.findByUserName(username).orElse(null);
-	    if (user == null) {
-	        return "UNF"; // Ensure this matches the frontend check
-	    }
+		System.err.println("sendPasswordForRole service");
+		User user = userdao.findByUserName(username).orElse(null);
+		if (user == null) {
+			return "UNF";
+		}
 
-	    // Create a MimeMessage
-	    MimeMessage message = mailSender.createMimeMessage();
-	    MimeMessageHelper helper = null;
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = null;
 		try {
 			helper = new MimeMessageHelper(message, true);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-	    try {
-	        helper.setFrom(sender);
-	        helper.setTo(toEmail);
-	        helper.setSubject("Request to Register as Seller");
+		try {
+			helper.setFrom(sender);
+			helper.setTo(toEmail);
+			helper.setSubject("Request to Register as Seller");
 
-	        // Create HTML content
-	        String htmlContent = "<html>" +
-	                "<body>" +
-	                "<h2>Dear Admin,</h2>" +
-	                "<p>I hope this message finds you well.</p>" +
-	                "<p>My name is <strong>" + user.getUserName() + "</strong>, and I am writing to request registration for a seller account on your website.</p>" +
-	                "<p>I am eager to start selling and contributing to your platform.</p>" +
-	                "<p>Please let me know if you require any further information or documentation to process my request.</p>" +
-	                "<p>Thank you for your attention to this matter.</p>" +
-	                "<p>Best regards,<br>" + user.getUserName() + "<br>" + toEmail + "</p>" +
-	                "</body>" +
-	                "</html>";
+			String htmlContent = "<html>" + "<body>" + "<h2>Dear Admin,</h2>"
+					+ "<p>I hope this message finds you well.</p>" + "<p>My name is <strong>" + user.getUserName()
+					+ "</strong>, and I am writing to request registration for a seller account on your website.</p>"
+					+ "<p>I am eager to start selling and contributing to your platform.</p>"
+					+ "<p>Please let me know if you require any further information or documentation to process my request.</p>"
+					+ "<p>Thank you for your attention to this matter.</p>" + "<p>Best regards,<br>"
+					+ user.getUserName() + "<br>" + toEmail + "</p>" + "</body>" + "</html>";
 
-	        // Set the HTML content
-	        helper.setText(htmlContent, true); // true indicates that the text is HTML
+			helper.setText(htmlContent, true);
+			System.out.println("Dear Admin I hope this message finds you well My name is  " + user.getUserName()
+					+ "and I am writing to request registration for a seller account on your website.I am eager to start selling and contributing to your platform.Please let me know if you require any further information or documentation to process my requestThank you for your attention to this matter.Best regards,"
+					+ user.getUserName());
 
-	        // Send the email
-	        mailSender.send(message);
-	        return "S"; // Ensure this matches the frontend check
-	    } catch (MessagingException e) {
-	        e.printStackTrace();
-	        return "ERROR"; // Handle the error appropriately
-	    }
+			mailSender.send(message);
+			return "S";
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			return "ERROR";
+		}
 	}
+
 	@Override
 	public String sendEmailToUser(String username, String role) {
 		User user = userdao.findByUserName(username).get();

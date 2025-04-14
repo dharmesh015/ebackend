@@ -39,5 +39,7 @@ public class ProductProxy {
 
     // Assuming you want to send only the image IDs instead of the entire ImageModel objects
     private Set<ImageModelProxy> productImages; // List of image IDs
+    
+	private boolean deleted = false;
 
 }

@@ -15,7 +15,7 @@ public interface ProductService {
 
 	List<ProductProxy> getAllProducts();
 
-	void deleteProductById(Long productId);
+	String deleteProductById(Long productId);
 
 	ProductProxy updateProduct(ProductProxy productProxy);
 

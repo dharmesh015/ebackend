@@ -66,15 +66,15 @@ public class ProductController {
 	    product.setProductId(null);
 
 	    try {
-	        // Save images first
+	     
 	        Set<ImageModel> images = uploadImage(file);
 	        
-	        // Set the saved images to the product
+	    
 	        product.setProductImages(images.stream()
 	            .map(image -> new ImageModelProxy(image.getId(), image.getName(), image.getType(), image.getPicByte()))
 	            .collect(Collectors.toSet()));
 	        
-	        // Now save the product
+	   
 	        return productService.addNewProduct(product);
 	    } catch (Exception e) {
 	        System.out.println("Error occurred: " + e.getMessage());
@@ -84,16 +84,15 @@ public class ProductController {
 	public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {
 	    Set<ImageModel> imageModels = new HashSet<>();
 	    for (MultipartFile file : multipartFiles) {
-	        // Create a new ImageModel instance
+	       
 	        ImageModel imageModel = new ImageModel();
 	        imageModel.setName(file.getOriginalFilename());
 	        imageModel.setType(file.getContentType());
 	        imageModel.setPicByte(file.getBytes());
 	        
-	        // Save the image to the database
-	        imageModel = productImageDao.save(imageModel); // Assuming you have an ImageRepository
+	      
+	        imageModel = productImageDao.save(imageModel); 
 	        
-	        // Add the saved image to the set
 	        imageModels.add(imageModel);
 	    }
 	    return imageModels;
@@ -104,10 +103,11 @@ public class ProductController {
 		return productService.getAllProducts();
 	}
 
+	@PreAuthorize("hasRole('Seller')")
 	@DeleteMapping("/deleteProduct/{productId}")
-	public void deleteProduct(@PathVariable Long productId) {
+	public  ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
 		System.err.println("delete conroller");
-		productService.deleteProductById(productId);
+		return  ResponseEntity.ok(productService.deleteProductById(productId)); 
 	}
 
 	@PreAuthorize("hasRole('Seller')")
@@ -115,11 +115,6 @@ public class ProductController {
 	public ProductProxy updateProduct(@RequestPart("product") ProductProxy product,
 			@RequestPart(value = "imageFile", required = false) MultipartFile[] file) {
 		try {
-//			// If new images are provided, upload them
-//			if (file != null && file.length > 0) {
-//				Set<ImageModel> images = uploadImage(file);
-//				product.setProductImages(images);
-//			}
 			return productService.updateProduct(product);
 		} catch (Exception e) {
 			System.out.println("Error occurred: " + e.getMessage());
@@ -141,12 +136,11 @@ public class ProductController {
 		List<ProductProxy> products = new ArrayList<>();
 
 		if (isSingleProductCheckout && productId != 0) {
-			// Single product checkout
+			
 			ProductProxy product = productService.getProductById(productId);
 			products.add(product);
 		} else {
-			// Cart checkout - get all products from user's cart
-			// Assuming you have a method to get the current user's cart items
+			
 			List<CartProxy> carts = productService.getCartDetails();
 
 			if (carts != null) {

@@ -16,4 +16,10 @@ public interface CartDao extends CrudRepository<Cart, Long>{
 
 	public List<Cart> findByUserAndProduct(User user, Product product);
 
+void deleteByProduct(Product product);
+void deleteByProduct_ProductId(Long productId);
+
+// Optional: If you need to find carts by product
+List<Cart> findByProduct_ProductId(Long productId);
+
 }

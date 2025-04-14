@@ -24,6 +24,10 @@ public interface ProductDao extends CrudRepository<Product, Long>{
 //	 Page<Product> findBySellername(String username, Pageable pageable);
 
 	List<Product> findBySellername(String sellerName);
+	
 	public  Page<Product> findBySellername(String username, Pageable pageable) ;
 	
+	List<Product> findByDeletedFalse();
+	public  Page<Product> findBySellernameAndDeletedFalse(String username,Pageable pageable);
+	  Page<Product> findByDeletedFalse(Pageable pageable);
 }

@@ -53,10 +53,10 @@ public class OrderDetail {
         this.user = user;
     }
 
-//     PrePersist method to set the order date before persisting
+
     @PrePersist
     protected void onCreate() {
-        this.orderDate = LocalDateTime.now(); // Set the current date
+        this.orderDate = LocalDateTime.now(); 
     }
 
     

@@ -25,6 +25,13 @@ public interface OrderDetailDao extends CrudRepository<OrderDetail, Long>{
 	public void deleteByProduct_ProductId(Long productId);
 	
 	List<OrderDetail> findByProduct_Sellername(String sellerName);
+
+
+List<OrderDetail> findByProduct(Product product);
+
+public boolean existsByProduct_ProductId(Long productId);
+
+List<OrderDetail> findByProduct_ProductId(Long productId);
 	
 
 }

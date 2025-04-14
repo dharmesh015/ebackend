@@ -60,6 +60,7 @@ public class AdminController {
 		return ResponseEntity.noContent().build(); // Return 204 No Content
 	}
 
+//	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateUser")
 	public String updateUser(@RequestBody UserProxy userProxy) {
 //		System.out.println(userProxy.getEmail());

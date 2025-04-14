@@ -38,7 +38,7 @@ public class PaymentDetail {
     @Column(nullable = false)
     private Date paymentDate;
     
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", referencedColumnName = "orderId")
     private OrderDetail order;
     

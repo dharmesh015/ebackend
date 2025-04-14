@@ -8,4 +8,5 @@ import com.ecom.entity.PaymentDetail;
 public interface PaymentDao extends CrudRepository<PaymentDetail, Long> {
     PaymentDetail findByRazorpayPaymentId(String razorpayPaymentId);
     void deleteByOrder(OrderDetail order);
+    
 }

@@ -1,5 +1,6 @@
 package com.ecom.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,10 +32,10 @@ public class UserImage {
     @Column(name = "image_data", length = 1000000)
     private byte[] imageData;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_name")
     private User user;
     
-    // Getters and Setters
+   
    
 }
