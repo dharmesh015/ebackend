@@ -64,7 +64,7 @@ public class OrderDetailController {
 		return orderDetailService.getOrderDetails();
 	}
 	
-	@PreAuthorize("hasRole('Seller')")
+//	@PreAuthorize("hasRole('Seller')")
 	@GetMapping({"/getAllOrderDetails"})
 	public List<OrderDetailProxy> getAllOrderDetails() {
 		return orderDetailService.getAllOrderDetails();

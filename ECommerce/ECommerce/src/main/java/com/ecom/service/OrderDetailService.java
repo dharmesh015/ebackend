@@ -11,12 +11,19 @@ import com.ecom.entity.OrderPaymentInput;
 import com.ecom.proxy.OrderDetailProxy;
 
 public interface OrderDetailService {
-	 List<OrderDetailProxy> getAllOrderDetails();
-	    List<OrderDetailProxy> getOrderDetails();
-	    void placeOrder(OrderInput orderInput, boolean isSingleProductCheckout);
-	    Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable);
-	    void deleteOrderDetailsByProductId(Long productId);
-	    void deleteProductAndRelatedOrders(Long productId);
-		void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
-		List<OrderDetailProxy> getOrdersBySeller(String sellerName);
+	List<OrderDetailProxy> getAllOrderDetails();
+
+	List<OrderDetailProxy> getOrderDetails();
+
+	void placeOrder(OrderInput orderInput, boolean isSingleProductCheckout);
+
+	Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable);
+
+	void deleteOrderDetailsByProductId(Long productId);
+
+	void deleteProductAndRelatedOrders(Long productId);
+
+	void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
+
+	List<OrderDetailProxy> getOrdersBySeller(String sellerName);
 }
