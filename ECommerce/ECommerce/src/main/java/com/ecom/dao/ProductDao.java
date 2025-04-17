@@ -13,21 +13,20 @@ import com.ecom.entity.Product;
 import com.ecom.entity.User;
 
 @Repository
-public interface ProductDao extends CrudRepository<Product, Long>{
-//
-	public Page findAll(Pageable pageable);
-	
-	public List<Product>  findByProductNameContainingIgnoreCaseOrProductDescriptionContainingIgnoreCase(
-		String key1, String key2, Pageable pageable);
-//	
+public interface ProductDao extends CrudRepository<Product, Long> {
 
-//	 Page<Product> findBySellername(String username, Pageable pageable);
+	public Page findAll(Pageable pageable);
+
+	public List<Product> findByProductNameContainingIgnoreCaseOrProductDescriptionContainingIgnoreCase(String key1,
+			String key2, Pageable pageable);
 
 	List<Product> findBySellername(String sellerName);
-	
-	public  Page<Product> findBySellername(String username, Pageable pageable) ;
-	
+
+	public Page<Product> findBySellername(String username, Pageable pageable);
+
 	List<Product> findByDeletedFalse();
-	public  Page<Product> findBySellernameAndDeletedFalse(String username,Pageable pageable);
-	  Page<Product> findByDeletedFalse(Pageable pageable);
+
+	public Page<Product> findBySellernameAndDeletedFalse(String username, Pageable pageable);
+
+	Page<Product> findByDeletedFalse(Pageable pageable);
 }

@@ -26,4 +26,6 @@ public interface OrderDetailService {
 	void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout);
 
 	List<OrderDetailProxy> getOrdersBySeller(String sellerName);
+
+
 }

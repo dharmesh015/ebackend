@@ -1,6 +1,5 @@
 package com.ecom.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -13,9 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class Role {
 
-	
 	@Id
-    private String roleName;
-    private String roleDescription;
+	private String roleName;
+	private String roleDescription;
 
 }

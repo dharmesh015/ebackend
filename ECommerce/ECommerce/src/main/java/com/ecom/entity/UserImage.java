@@ -22,20 +22,16 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserImage {
 
-   
-
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Lob
-    @Column(name = "image_data", length = 1000000)
-    private byte[] imageData;
-    
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_name")
-    private User user;
-    
-   
-   
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Lob
+	@Column(name = "image_data", length = 1000000)
+	private byte[] imageData;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_name")
+	private User user;
+
 }

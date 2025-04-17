@@ -13,7 +13,6 @@ import java.util.Set;
 @Data
 public class User {
 
-
 	@Id
 	private String userName;
 	private String userFirstName;
@@ -23,10 +22,10 @@ public class User {
 	private String userPassword;
 	private String address;
 
-	@ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.ALL, CascadeType.REMOVE})
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinTable(name = "USER_ROLE", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "ROLE_ID") })
 	private Set<Role> role;
-	
 
+	
 }

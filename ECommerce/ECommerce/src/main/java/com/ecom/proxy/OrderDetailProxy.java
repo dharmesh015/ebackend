@@ -39,10 +39,9 @@ public class OrderDetailProxy {
     @NotNull(message = "Order amount cannot be null")
     private Double orderAmount;
 
-    private ProductProxy product; // Assuming you want to send only the product ID
+    private ProductProxy product;
 
     private UserProxy user; 
     
-    private LocalDateTime orderDate; // Assuming you want to send only the user name
-
+    private LocalDateTime orderDate; 
 }

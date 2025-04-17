@@ -61,6 +61,9 @@ public class UserServiceImpl implements UserService{
 			sellerUser.setUserPassword(getEncodedPassword("seller"));
 			sellerUser.setUserFirstName("dharmesh");
 			sellerUser.setUserLastName("gelatar");
+			sellerUser.setAddress("ahmedabad");
+			sellerUser.setEmail("dharmesh@gmail.com");
+			sellerUser.setMobileNumber("9069060653");
 			Set<Role> roles = new HashSet<>();
 			roles.add(sellerRole);
 			sellerUser.setRole(roles);
@@ -71,6 +74,9 @@ public class UserServiceImpl implements UserService{
 			adminUser.setUserPassword(getEncodedPassword("admin"));
 			adminUser.setUserFirstName("deep");
 			adminUser.setUserLastName("patel");
+			adminUser.setAddress("ahmedabad");
+			adminUser.setEmail("deep@gmail.com");
+			adminUser.setMobileNumber("9965060653");
 			Set<Role> adminRoles = new HashSet<>();
 			adminRoles.add(adminRole);
 			adminUser.setRole(adminRoles);
@@ -89,7 +95,7 @@ public class UserServiceImpl implements UserService{
 			System.err.println("EmailExist");
 			return "EmailExist";
 		}
-//		userDao.existsByEmail()
+
 	
 		User user = mapper.convertValue(usero, User.class);
 		user.setUserPassword(getEncodedPassword(user.getUserPassword()));
@@ -102,7 +108,6 @@ public class UserServiceImpl implements UserService{
 		savedUser.setRole(userRoles);
 
 		User userobj = userDao.save(savedUser);
-//		 mapper.convertValue(userobj, UserProxy.class);
 		return "register";
 	}
 

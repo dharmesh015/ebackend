@@ -49,7 +49,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 	@Autowired
 	private CartDao cartDao;
-	
+
 	@Autowired
 	private PaymentDao paymentDao;
 
@@ -100,10 +100,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 		OrderInput orderInput = orderPaymentInput.getOrderDetails();
 		PaymentInput paymentDetails = orderPaymentInput.getPaymentDetails();
-		
-		processOrder(orderInput, isSingleProductCheckout,paymentDetails );
-	}
 
+		processOrder(orderInput, isSingleProductCheckout, paymentDetails);
+	}
 
 	private void processOrder(OrderInput orderInput, boolean isSingleProductCheckout, PaymentInput paymentInput) {
 		List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
@@ -118,10 +117,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 					orderInput.getContactNumber(), orderInput.getAlternateContactNumber(), ORDER_PLACED,
 					product.getProductDiscountedPrice() * o.getQuantity(), product, user);
 
-			
 			OrderDetail savedOrder = orderDetailDao.save(orderDetail);
 
-			
 			if (paymentInput != null) {
 				PaymentDetail paymentDetail = new PaymentDetail(paymentInput.getRazorpayPaymentId(),
 						paymentInput.getRazorpayOrderId(), paymentInput.getRazorpaySignature(),
@@ -130,7 +127,6 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 				paymentDao.save(paymentDetail);
 			}
 
-		
 			if (!isSingleProductCheckout) {
 				List<Cart> carts = cartDao.findByUser(user);
 				carts.forEach(cart -> cartDao.deleteById(cart.getCartId()));
@@ -149,12 +145,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 			}
 			return orderDetail;
 		}).collect(Collectors.toList());
-//             return  products;
 		return new PageImpl<>(mappper.convertList(updatedOrderDetails, OrderDetailProxy.class), pageable,
 				products.getTotalElements());
 	}
 
-	@Transactional 
+	@Transactional
 	public void deleteOrderDetailsByProductId(Long productId) {
 		orderDetailDao.deleteByProduct_ProductId(productId);
 	}
@@ -166,10 +161,12 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 	}
 
 	public List<OrderDetailProxy> getOrdersBySeller(String sellerName) {
-		System.out.println("getOrdersBySeller service");
-		System.out.println(orderDetailDao.findByProduct_Sellername(sellerName));
 		return mappper.convertList(orderDetailDao.findByProduct_Sellername(sellerName), OrderDetailProxy.class);
-         
-    }
+
+	}
+	
+	// Add this method to your OrderService class
+	
+	
 
 }

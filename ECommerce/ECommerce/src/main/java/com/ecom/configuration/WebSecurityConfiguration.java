@@ -31,26 +31,18 @@ public class WebSecurityConfiguration {
 	@Autowired
 	private UserDetailsService jwtService;
 
-//    public WebSecurityConfiguration(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, 
-//                                    JwtRequestFilter jwtRequestFilter, 
-//                                    UserDetailsService jwtService) {
-//        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-//        this.jwtRequestFilter = jwtRequestFilter;
-//        this.jwtService = jwtService;
-//    }
-
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.cors(); // CORS (enable if required)
-		http.csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+		http.cors();
+		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/authenticate", "/createNewRole", "/HttpMethod.OPTIONS", "/deleteProduct/**",
-								"/registerNewUser", "/getAllProducts", "/getProductById/**", "/getProductDetails/**",
-								"/getdata/**", "/getAllProductsPageWise", "/getorderdetails/**", "/upload-image",
-								"/send-email", "/reset-password/**", "/validate-token/**","/getAllOrderDetails")
+						.requestMatchers("/authenticate", "/createNewRole", "/HttpMethod.OPTIONS", "/registerNewUser",
+								"/getAllProducts", "/getProductById/**", "/getProductDetails/**",
+								"/getAllProductsPageWise", "/upload-image", "/send-email", "/reset-password/**",
+								"/validate-token/**", "/getAllOrderDetails")
 						.permitAll().requestMatchers(HttpHeaders.ALLOW).permitAll().anyRequest().authenticated())
 				.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

@@ -23,7 +23,7 @@ public class ImageModelProxy {
 	private String name;
 	private String type;
 	private byte[] picByte;
-	
+
 	public ImageModelProxy(String name, String type, byte[] picByte) {
 		super();
 		this.name = name;

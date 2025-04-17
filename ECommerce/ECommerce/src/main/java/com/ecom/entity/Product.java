@@ -22,9 +22,6 @@ import jakarta.persistence.JoinColumn;
 @AllArgsConstructor
 public class Product {
 
-	
-
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productId;
@@ -39,13 +36,8 @@ public class Product {
 	@JoinTable(name = "product_images", joinColumns = { @JoinColumn(name = "product_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "image_id") })
 	private Set<ImageModel> productImages;
-	
-	
+
 	@Column(nullable = false)
 	private boolean deleted = false;
-
-	
-
-	
 
 }

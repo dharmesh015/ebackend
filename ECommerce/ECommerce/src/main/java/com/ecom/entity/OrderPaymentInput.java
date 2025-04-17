@@ -1,32 +1,17 @@
 package com.ecom.entity;
 
+import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderPaymentInput {
-    
-    private OrderInput orderDetails;
-    private PaymentInput paymentDetails;
-    
-    public OrderPaymentInput() {
-    }
-    
-    public OrderPaymentInput(OrderInput orderDetails, PaymentInput paymentDetails) {
-        this.orderDetails = orderDetails;
-        this.paymentDetails = paymentDetails;
-    }
 
-    public OrderInput getOrderDetails() {
-        return orderDetails;
-    }
+	private OrderInput orderDetails;
+	private PaymentInput paymentDetails;
 
-    public void setOrderDetails(OrderInput orderDetails) {
-        this.orderDetails = orderDetails;
-    }
-
-    public PaymentInput getPaymentDetails() {
-        return paymentDetails;
-    }
-
-    public void setPaymentDetails(PaymentInput paymentDetails) {
-        this.paymentDetails = paymentDetails;
-    }
 }

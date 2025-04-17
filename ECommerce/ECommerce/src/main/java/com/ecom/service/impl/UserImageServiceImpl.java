@@ -13,40 +13,39 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-public class UserImageServiceImpl implements UserImageService{
+public class UserImageServiceImpl implements UserImageService {
 
-    @Autowired
-    private UserImageDao userImageRepository;
-    
-    @Autowired
-    private UserDao userDao;
-    
-    public UserImage uploadImage(String userName, MultipartFile file) throws IOException {
-        User user = userDao.findById(userName).orElseThrow(() -> 
-            new RuntimeException("User not found with username: " + userName));
-        
-        // Check if user already has an image
-        Optional<UserImage> existingImage = userImageRepository.findByUser(user);
-        UserImage userImage;
-        
-        if (existingImage.isPresent()) {
-            userImage = existingImage.get();
-            userImage.setImageData(file.getBytes());
-        } else {
-            userImage = new UserImage();
-            userImage.setUser(user);
-            userImage.setImageData(file.getBytes());
-        }
-        
-        return userImageRepository.save(userImage);
-    }
-    
-    public byte[] getImageByUserName(String userName) {
-        User user = userDao.findById(userName).orElseThrow(() -> 
-            new RuntimeException("User not found with username: " + userName));
-        
-        Optional<UserImage> userImage = userImageRepository.findByUser(user);
-        
-        return userImage.map(UserImage::getImageData).orElse(null);
-    }
+	@Autowired
+	private UserImageDao userImageRepository;
+
+	@Autowired
+	private UserDao userDao;
+
+	public UserImage uploadImage(String userName, MultipartFile file) throws IOException {
+		User user = userDao.findById(userName)
+				.orElseThrow(() -> new RuntimeException("User not found with username: " + userName));
+
+		Optional<UserImage> existingImage = userImageRepository.findByUser(user);
+		UserImage userImage;
+
+		if (existingImage.isPresent()) {
+			userImage = existingImage.get();
+			userImage.setImageData(file.getBytes());
+		} else {
+			userImage = new UserImage();
+			userImage.setUser(user);
+			userImage.setImageData(file.getBytes());
+		}
+
+		return userImageRepository.save(userImage);
+	}
+
+	public byte[] getImageByUserName(String userName) {
+		User user = userDao.findById(userName)
+				.orElseThrow(() -> new RuntimeException("User not found with username: " + userName));
+
+		Optional<UserImage> userImage = userImageRepository.findByUser(user);
+
+		return userImage.map(UserImage::getImageData).orElse(null);
+	}
 }

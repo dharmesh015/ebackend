@@ -13,25 +13,22 @@ import com.ecom.entity.Product;
 import com.ecom.entity.User;
 
 @Repository
-public interface OrderDetailDao extends CrudRepository<OrderDetail, Long>{
-	
+public interface OrderDetailDao extends CrudRepository<OrderDetail, Long> {
+
 	public List<OrderDetail> findByUser(User user);
-	
+
 	void deleteByUser(User user);
-	
-//	Page<Product> findByUserName(String userName);
+
 	Page<OrderDetail> findByUser(User user, Pageable pageable);
 
 	public void deleteByProduct_ProductId(Long productId);
-	
+
 	List<OrderDetail> findByProduct_Sellername(String sellerName);
 
+	List<OrderDetail> findByProduct(Product product);
 
-List<OrderDetail> findByProduct(Product product);
+	public boolean existsByProduct_ProductId(Long productId);
 
-public boolean existsByProduct_ProductId(Long productId);
-
-List<OrderDetail> findByProduct_ProductId(Long productId);
-	
+	List<OrderDetail> findByProduct_ProductId(Long productId);
 
 }

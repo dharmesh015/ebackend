@@ -24,22 +24,21 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class ProductProxy {
 
-    private Long productId;
+	private Long productId;
 
-    @NotNull(message = "Product name cannot be null")
-    private String productName;
+	@NotNull(message = "Product name cannot be null")
+	private String productName;
 
-    private String productDescription;
+	private String productDescription;
 
-    private Double productDiscountedPrice;
+	private Double productDiscountedPrice;
 
-    private Double productActualPrice;
+	private Double productActualPrice;
 
-    private String sellername;
+	private String sellername;
 
-    // Assuming you want to send only the image IDs instead of the entire ImageModel objects
-    private Set<ImageModelProxy> productImages; // List of image IDs
-    
+	private Set<ImageModelProxy> productImages;
+
 	private boolean deleted = false;
 
 }

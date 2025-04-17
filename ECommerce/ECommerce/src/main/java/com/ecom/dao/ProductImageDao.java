@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.ecom.entity.ImageModel;
 
-public interface ProductImageDao extends JpaRepository<ImageModel ,Long> {
+public interface ProductImageDao extends JpaRepository<ImageModel, Long> {
 
 }

@@ -21,8 +21,6 @@ import com.ecom.service.JwtService;
 import com.ecom.service.TokenService;
 import com.ecom.service.UserService;
 import com.ecom.service.impl.EmailserviceImpl;
-//import com.ecom.service.impl.TokenService;
-//import com.ecom.service.impl.UserService;
 
 @RestController
 @CrossOrigin
@@ -52,6 +50,7 @@ public class JwtController {
 		return jwtService.createJwtToken(user);
 	}
 
+	@PreAuthorize("hasRole('Admin')")
 	@GetMapping({ "/getdata/{token}" })
 	public UserProxy getdata(@PathVariable("token") String token) {
 		return jwtService.getdata(token);

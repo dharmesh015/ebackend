@@ -14,16 +14,13 @@ import com.ecom.entity.User;
 public interface UserDao extends CrudRepository<User, String> {
 
 	Optional<User> findByUserName(String usrname);
-	
-	void deleteByUserName(String userName);
-		
 
-//	Optional<User> findByEmail(String toEmail);
+	void deleteByUserName(String userName);
 
 	User findByEmail(String toEmail);
-	
+
 	public Page findAll(Pageable pageable);
-
-
 	
+	
+
 }

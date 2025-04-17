@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import com.ecom.entity.User;
 import com.ecom.proxy.UserProxy;
 
-
 public interface AdminService {
 
-    Page<UserProxy> getAllUsersPageWise(PageRequest pageable);
-    void deleteUser (String userName);
-    String updateUser (UserProxy user);
-    UserProxy getuser(String name);
+	Page<UserProxy> getAllUsersPageWise(PageRequest pageable);
+
+	void deleteUser(String userName);
+
+	String updateUser(UserProxy user);
+
+	UserProxy getuser(String name);
 }

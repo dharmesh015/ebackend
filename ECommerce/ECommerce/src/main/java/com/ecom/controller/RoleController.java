@@ -9,22 +9,16 @@ import com.ecom.entity.Role;
 import com.ecom.entity.User;
 import com.ecom.proxy.RoleProxy;
 import com.ecom.service.RoleService;
-//import com.ecom.service.impl.RoleService;
-//import com.ecom.service.impl.UserService;
 
 @RestController
 public class RoleController {
 
-    @Autowired
-    private RoleService roleService;
-    
+	@Autowired
+	private RoleService roleService;
 
+	@PostMapping("/createNewRole")
+	public RoleProxy createNewRole(@RequestBody RoleProxy role) {
+		return roleService.createNewRole(role);
+	}
 
-    @PostMapping("/createNewRole")
-    public RoleProxy createNewRole(@RequestBody RoleProxy role) {
-        return roleService.createNewRole(role);
-    }
-    
-   
-    
 }

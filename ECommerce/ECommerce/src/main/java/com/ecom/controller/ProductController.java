@@ -41,15 +41,14 @@ import com.ecom.service.ProductService;
 import com.ecom.util.MapperUtil;
 
 @RestController
-@CrossOrigin(value = "http://localhost:4200")
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private ProductImageDao productImageDao;
-	
+
 	@Autowired
 	private MapperUtil mapper;
 
@@ -61,41 +60,39 @@ public class ProductController {
 	@PreAuthorize("hasRole('Seller')")
 	@PostMapping(value = { "/addNewProduct" }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ProductProxy addNewProduct(@RequestPart("product") ProductProxy product,
-	                                   @RequestPart("imageFile") MultipartFile[] file) {
-	    System.out.println("here called");
-	    product.setProductId(null);
+			@RequestPart("imageFile") MultipartFile[] file) {
+		System.out.println("here called");
+		product.setProductId(null);
 
-	    try {
-	     
-	        Set<ImageModel> images = uploadImage(file);
-	        
-	    
-	        product.setProductImages(images.stream()
-	            .map(image -> new ImageModelProxy(image.getId(), image.getName(), image.getType(), image.getPicByte()))
-	            .collect(Collectors.toSet()));
-	        
-	   
-	        return productService.addNewProduct(product);
-	    } catch (Exception e) {
-	        System.out.println("Error occurred: " + e.getMessage());
-	        return null;
-	    }
+		try {
+
+			Set<ImageModel> images = uploadImage(file);
+
+			product.setProductImages(images.stream().map(
+					image -> new ImageModelProxy(image.getId(), image.getName(), image.getType(), image.getPicByte()))
+					.collect(Collectors.toSet()));
+
+			return productService.addNewProduct(product);
+		} catch (Exception e) {
+			System.out.println("Error occurred: " + e.getMessage());
+			return null;
+		}
 	}
+
 	public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {
-	    Set<ImageModel> imageModels = new HashSet<>();
-	    for (MultipartFile file : multipartFiles) {
-	       
-	        ImageModel imageModel = new ImageModel();
-	        imageModel.setName(file.getOriginalFilename());
-	        imageModel.setType(file.getContentType());
-	        imageModel.setPicByte(file.getBytes());
-	        
-	      
-	        imageModel = productImageDao.save(imageModel); 
-	        
-	        imageModels.add(imageModel);
-	    }
-	    return imageModels;
+		Set<ImageModel> imageModels = new HashSet<>();
+		for (MultipartFile file : multipartFiles) {
+
+			ImageModel imageModel = new ImageModel();
+			imageModel.setName(file.getOriginalFilename());
+			imageModel.setType(file.getContentType());
+			imageModel.setPicByte(file.getBytes());
+
+			imageModel = productImageDao.save(imageModel);
+
+			imageModels.add(imageModel);
+		}
+		return imageModels;
 	}
 
 	@GetMapping({ "/getAllProducts" })
@@ -105,9 +102,9 @@ public class ProductController {
 
 	@PreAuthorize("hasRole('Seller')")
 	@DeleteMapping("/deleteProduct/{productId}")
-	public  ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+	public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
 		System.err.println("delete conroller");
-		return  ResponseEntity.ok(productService.deleteProductById(productId)); 
+		return ResponseEntity.ok(productService.deleteProductById(productId));
 	}
 
 	@PreAuthorize("hasRole('Seller')")
@@ -136,11 +133,11 @@ public class ProductController {
 		List<ProductProxy> products = new ArrayList<>();
 
 		if (isSingleProductCheckout && productId != 0) {
-			
+
 			ProductProxy product = productService.getProductById(productId);
 			products.add(product);
 		} else {
-			
+
 			List<CartProxy> carts = productService.getCartDetails();
 
 			if (carts != null) {
@@ -162,7 +159,7 @@ public class ProductController {
 		PageRequest pageable = PageRequest.of(page, size, sort);
 		return productService.getAllProductsPageWise(pageable);
 	}
-	
+
 	@PreAuthorize("hasRole('Seller')")
 	@GetMapping("/getAllProductsPageWiseByUser")
 	public Page<ProductProxy> getAllProduct(@RequestParam(defaultValue = "0") int page,
@@ -173,6 +170,5 @@ public class ProductController {
 		PageRequest pageable = PageRequest.of(page, size, sort);
 		return productService.getAllProductsPageWiseByUser(pageable);
 	}
-	
-	
+
 }

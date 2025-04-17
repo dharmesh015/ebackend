@@ -21,19 +21,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class UserProxy {
+
+	@NotNull(message = "Username cannot be null")
+	private String userName;
+
+	private String userFirstName;
+	private String userLastName;
+	@NotNull(message = "Email cannot be null")
+	private String email;
+
+	private String mobileNumber;
+	private String userPassword;
+	private String address;
+
+	private Set<RoleProxy> role;
 	
-	    @NotNull(message = "Username cannot be null")
-	    private String userName;
-
-	    private String userFirstName;
-	    private String userLastName;
-	    @NotNull(message = "Email cannot be null")
-	    private String email;
-
-	    private String mobileNumber;
-	    private String userPassword;
-	    private String address;
-
-	    // Assuming you want to send only the role IDs instead of the entire Role objects
-	    private Set<RoleProxy> role; // List of role IDs
+	
 }

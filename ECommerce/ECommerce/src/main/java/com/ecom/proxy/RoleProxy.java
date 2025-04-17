@@ -1,4 +1,5 @@
 package com.ecom.proxy;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
@@ -20,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleProxy {
-	
-    private String roleName;
-    private String roleDescription;
+
+	private String roleName;
+	private String roleDescription;
 }

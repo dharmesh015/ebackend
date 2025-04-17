@@ -10,16 +10,16 @@ import com.ecom.service.RoleService;
 import com.ecom.util.MapperUtil;
 
 @Service
-public class RoleServiceImpl implements RoleService{
+public class RoleServiceImpl implements RoleService {
 
-    @Autowired
-    private RoleDao roleDao;
-    
-    @Autowired
-    private MapperUtil mapper;
+	@Autowired
+	private RoleDao roleDao;
 
-    public RoleProxy createNewRole(RoleProxy role) {
-    	Role convertValue = mapper.convertValue(role,Role.class);
-        return mapper.convertValue(roleDao.save(convertValue),RoleProxy.class);
-    }
+	@Autowired
+	private MapperUtil mapper;
+
+	public RoleProxy createNewRole(RoleProxy role) {
+		Role convertValue = mapper.convertValue(role, Role.class);
+		return mapper.convertValue(roleDao.save(convertValue), RoleProxy.class);
+	}
 }

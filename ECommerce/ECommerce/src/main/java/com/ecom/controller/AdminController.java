@@ -36,10 +36,9 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminservice;
-	
+
 	@Autowired
 	private UserService userService;
-	
 
 	@Autowired
 	private MapperUtil mapper;
@@ -57,28 +56,26 @@ public class AdminController {
 	public ResponseEntity<Void> deleteUserByUserName(@PathVariable("userName") String userName) {
 		System.err.println("delete controller--" + userName);
 		adminservice.deleteUser(userName);
-		return ResponseEntity.noContent().build(); // Return 204 No Content
+		return ResponseEntity.noContent().build();
 	}
 
-//	@PreAuthorize("hasRole('Admin')")
 	@PutMapping("/updateUser")
 	public String updateUser(@RequestBody UserProxy userProxy) {
-//		System.out.println(userProxy.getEmail());
 		return adminservice.updateUser(userProxy);
 	}
 
 	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/getuser/{name}")
 	public UserProxy getUser(@PathVariable("name") String name) {
-
 		return adminservice.getuser(name);
 	}
-	
+
 	@PreAuthorize("hasRole('Admin')")
 	@GetMapping("/updateUserRole/{userName}/{role}")
-    public ResponseEntity<String> updateUserRole(@PathVariable("userName") String userName, @PathVariable("role") String role) {
-        System.out.println("updateUserRole");
+	public ResponseEntity<String> updateUserRole(@PathVariable("userName") String userName,
+			@PathVariable("role") String role) {
+		System.out.println("updateUserRole");
 		userService.updateUserRole(userName, role);
-        return ResponseEntity.ok("User  role updated successfully");
-    }
+		return ResponseEntity.ok("User  role updated successfully");
+	}
 }

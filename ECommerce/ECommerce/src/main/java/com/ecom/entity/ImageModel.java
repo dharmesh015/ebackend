@@ -14,17 +14,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageModel {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private String type;
-	
-	@Column(length= 50000000)
-	private byte[] picByte;
 
-	
+	@Column(length = 50000000)
+	private byte[] picByte;
 
 	public ImageModel(String name, String type, byte[] picByte) {
 		super();
@@ -32,8 +30,5 @@ public class ImageModel {
 		this.type = type;
 		this.picByte = picByte;
 	}
-
-	
-	
 
 }

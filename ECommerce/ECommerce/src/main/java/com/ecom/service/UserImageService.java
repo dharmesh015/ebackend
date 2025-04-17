@@ -8,5 +8,6 @@ import com.ecom.entity.UserImage;
 
 public interface UserImageService {
 	UserImage uploadImage(String userName, MultipartFile file) throws IOException;
-    byte[] getImageByUserName(String userName);
+
+	byte[] getImageByUserName(String userName);
 }
