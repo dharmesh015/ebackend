@@ -38,8 +38,8 @@ public class WebSecurityConfiguration {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/authenticate", "/createNewRole", "/HttpMethod.OPTIONS", "/registerNewUser",
 								"/getAllProducts", "/getProductById/**", "/getProductDetails/**",
-								"/getAllProductsPageWise", "/upload-image", "/send-email", "/reset-password/**",
-								"/validate-token/**", "/getAllOrderDetails")
+								"/getAllProductsPageWise", "/send-email", "/reset-password/**",
+								"/validate-token/**")
 						.permitAll().requestMatchers(HttpHeaders.ALLOW).permitAll().anyRequest().authenticated())
 				.exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
 //				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -20,7 +20,7 @@ public class CartController {
 	@Autowired
 	private CartService cartService;
 
-	@PreAuthorize("hasRole('User')")
+
 	@GetMapping({ "/addToCart/{productId}" })
 	public CartProxy addTocart(@PathVariable(name = "productId") Long productId) {
 		System.err.println("add cart controller" + productId);
@@ -33,7 +33,6 @@ public class CartController {
 		cartService.deleteCartItem(cartId);
 	}
 
-	@PreAuthorize("hasRole('User')")
 	@GetMapping({ "/getCartDetails" })
 	public List<CartProxy> getCartDetails() {
 		return cartService.getCartDetails();

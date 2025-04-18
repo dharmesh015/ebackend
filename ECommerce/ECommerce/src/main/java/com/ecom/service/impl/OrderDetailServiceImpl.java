@@ -30,6 +30,7 @@ import com.ecom.entity.PaymentInput;
 import com.ecom.entity.Product;
 import com.ecom.entity.User;
 import com.ecom.proxy.OrderDetailProxy;
+import com.ecom.service.EmailService;
 import com.ecom.service.OrderDetailService;
 import com.ecom.util.MapperUtil;
 
@@ -55,6 +56,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 	@Autowired
 	private MapperUtil mappper;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public List<OrderDetailProxy> getAllOrderDetails() {
 		List<OrderDetail> orderDetails = new ArrayList<>();
@@ -95,43 +99,84 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 	}
 
-	public void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout) {
-		System.out.println("place order with payment service");
+	@Override
+    public void placeOrderWithPayment(OrderPaymentInput orderPaymentInput, boolean isSingleProductCheckout) {
+        System.out.println("place order with payment service");
 
-		OrderInput orderInput = orderPaymentInput.getOrderDetails();
-		PaymentInput paymentDetails = orderPaymentInput.getPaymentDetails();
+        OrderInput orderInput = orderPaymentInput.getOrderDetails();
+        PaymentInput paymentDetails = orderPaymentInput.getPaymentDetails();
 
-		processOrder(orderInput, isSingleProductCheckout, paymentDetails);
-	}
+        // Process the order and get the order details
+        List<OrderDetail> processedOrders = processOrder(orderInput, isSingleProductCheckout, paymentDetails);
+        
+        // For each order, generate and send a PDF bill
+        for (OrderDetail orderDetail : processedOrders) {
+            try {
+                // Generate the PDF bill
+                byte[] pdfBytes = OrderBillPDFGenerator.generateOrderBillPDF(orderDetail);
+                
+                // Send email with the PDF attachment
+                emailService.sendOrderConfirmationEmail(orderDetail, pdfBytes);
+                
+            } catch (Exception e) {
+                // Log the error but don't fail the order process
+                System.err.println("Failed to generate or send order bill: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
-	private void processOrder(OrderInput orderInput, boolean isSingleProductCheckout, PaymentInput paymentInput) {
-		List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
+    // This method processes the order and returns the list of created OrderDetail objects
+    private List<OrderDetail> processOrder(OrderInput orderInput, boolean isSingleProductCheckout, PaymentInput paymentDetails) {
+        List<OrderProductQuantity> productQuantityList = orderInput.getOrderProductQuantityList();
+        List<OrderDetail> orderDetails = new ArrayList<>();
 
-		for (OrderProductQuantity o : productQuantityList) {
-			Product product = productDao.findById((long) o.getProductId()).get();
+        for (OrderProductQuantity o : productQuantityList) {
+            Product product = productDao.findById((long) o.getProductId()).get();
 
-			String currentUser = JwtRequestFilter.CURRENT_USER;
-			User user = userDao.findById(currentUser).get();
+            String currentUser = JwtRequestFilter.CURRENT_USER;
+            User user = userDao.findById(currentUser).get();
 
-			OrderDetail orderDetail = new OrderDetail(orderInput.getFullName(), orderInput.getFullAddress(),
-					orderInput.getContactNumber(), orderInput.getAlternateContactNumber(), ORDER_PLACED,
-					product.getProductDiscountedPrice() * o.getQuantity(), product, user);
+            OrderDetail orderDetail = new OrderDetail(
+                orderInput.getFullName(),
+                orderInput.getFullAddress(),
+                orderInput.getContactNumber(),
+                orderInput.getAlternateContactNumber(),
+                ORDER_PLACED,
+                product.getProductDiscountedPrice() * o.getQuantity(),
+                product,
+                user
+            );
 
-			OrderDetail savedOrder = orderDetailDao.save(orderDetail);
+            
 
-			if (paymentInput != null) {
-				PaymentDetail paymentDetail = new PaymentDetail(paymentInput.getRazorpayPaymentId(),
-						paymentInput.getAmount(), paymentInput.getStatus(), savedOrder);
+            orderDetailDao.save(orderDetail);
+            orderDetails.add(orderDetail);
+        }
 
-				paymentDao.save(paymentDetail);
-			}
+        // Clear cart if this is not a single product checkout
+        if (!isSingleProductCheckout) {
+            String currentUser = JwtRequestFilter.CURRENT_USER;
+            User user = userDao.findById(currentUser).get();
+            List<Cart> carts = cartDao.findByUser(user);
+            carts.forEach(cart -> cartDao.deleteById(cart.getCartId()));
+        }
 
-			if (!isSingleProductCheckout) {
-				List<Cart> carts = cartDao.findByUser(user);
-				carts.forEach(cart -> cartDao.deleteById(cart.getCartId()));
-			}
-		}
-	}
+        return orderDetails;
+    }
+
+ 
+    public byte[] generateOrderBill(Long orderId) {
+        try {
+            OrderDetail orderDetail = orderDetailDao.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+            
+            return OrderBillPDFGenerator.generateOrderBillPDF(orderDetail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate order bill PDF: " + e.getMessage());
+        }
+    }
 
 	public Page<OrderDetailProxy> getAllorderPageWise(String username, Pageable pageable) {
 		User user = userDao.findByUserName(username).get();

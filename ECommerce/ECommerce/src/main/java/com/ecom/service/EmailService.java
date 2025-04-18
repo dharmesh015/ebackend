@@ -2,6 +2,8 @@ package com.ecom.service;
 
 import org.springframework.stereotype.Service;
 
+import com.ecom.entity.OrderDetail;
+
 public interface EmailService {
 	void sendTestEmail();
 
@@ -14,5 +16,7 @@ public interface EmailService {
 	String sendEmailForRole(String username, String toEmail);
 
 	String sendEmailToUser(String username, String toEmail);
+
+	String sendOrderConfirmationEmail(OrderDetail orderDetail, byte[] pdfBytes);
 
 }

@@ -40,7 +40,7 @@ public class OrderDetailController {
 		this.tokenServiceImpl = tokenServiceImpl;
 	}
 
-	@PreAuthorize("hasRole('User')")
+
 	@PostMapping({ "/placeOrder/{issingleProducrCheckout}" })
 	public void placeOrder(@PathVariable("issingleProducrCheckout") boolean issingleProducrCheckout,
 			@RequestBody OrderInput orderInput) {
@@ -49,7 +49,7 @@ public class OrderDetailController {
 
 	}
 
-	@PreAuthorize("hasRole('User')")
+
 	@PostMapping("/placeOrderWithPayment/{isSingleProductCheckout}")
 	public ResponseEntity<String> placeOrderWithPayment(@PathVariable boolean isSingleProductCheckout,
 			@RequestBody OrderPaymentInput orderPaymentInput) {

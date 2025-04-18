@@ -124,7 +124,7 @@ public class ProductController {
 		return productService.getProductById(productId);
 	}
 
-	@PreAuthorize("hasRole('User')")
+//	@PreAuthorize("hasRole('User')")
 	@GetMapping({ "/getProductDetails/{isSingleProductCheckout}/{productId}" })
 	public List<ProductProxy> getProductDetails(
 			@PathVariable(name = "isSingleProductCheckout") boolean isSingleProductCheckout,
