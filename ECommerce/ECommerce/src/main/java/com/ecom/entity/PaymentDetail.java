@@ -23,10 +23,6 @@ public class PaymentDetail {
 	@Column(nullable = false)
 	private String razorpayPaymentId;
 
-	private String razorpayOrderId;
-
-	private String razorpaySignature;
-
 	@Column(nullable = false)
 	private Double amount;
 
@@ -44,11 +40,9 @@ public class PaymentDetail {
 		this.paymentDate = new Date();
 	}
 
-	public PaymentDetail(String razorpayPaymentId, String razorpayOrderId, String razorpaySignature, Double amount,
+	public PaymentDetail(String razorpayPaymentId, Double amount,
 			String status, OrderDetail order) {
 		this.razorpayPaymentId = razorpayPaymentId;
-		this.razorpayOrderId = razorpayOrderId;
-		this.razorpaySignature = razorpaySignature;
 		this.amount = amount;
 		this.status = status;
 		this.order = order;

@@ -121,7 +121,6 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 			if (paymentInput != null) {
 				PaymentDetail paymentDetail = new PaymentDetail(paymentInput.getRazorpayPaymentId(),
-						paymentInput.getRazorpayOrderId(), paymentInput.getRazorpaySignature(),
 						paymentInput.getAmount(), paymentInput.getStatus(), savedOrder);
 
 				paymentDao.save(paymentDetail);
